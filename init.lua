@@ -1,6 +1,18 @@
 print("loading [fishing] mod")
-fishing_setting = {}
+local path = minetest.get_modpath("fishing").."/"
 
+fishing_setting = {}
+fishing_setting.func = {}
+fishing_setting.is_creative_mode = minetest.setting_getbool("creative_mode")
+fishing_setting.file = minetest.get_worldpath() .. "/fishing_config.txt"
+
+fishing_setting.settings = {}
+--for random object 
+random_objects = {}
+fishing_setting.baits = {}
+fishing_setting.prizes = {}
+fishing_setting.settings["timer_tresor"] = 3600
+fishing_setting.settings.chance = {}
 
 if (minetest.get_modpath("intllib")) then
   dofile(minetest.get_modpath("intllib").."/intllib.lua")
@@ -10,19 +22,30 @@ else
 end
 
 
-
-fishing_setting.file = minetest.get_worldpath() .. "/fishing_config.txt"
-fishing_setting.is_creative_mode = minetest.setting_getbool("creative_mode")
-fishing_setting.setting = {}
-fishing_setting.random_timer = 3600
-fishing_setting.prizes = {}
-
---for random object 
-random_objects = {}
-
-fishing_setting.baits = {}
-local path = minetest.get_modpath("fishing").."/"
 dofile(path .."settings.txt")
+dofile(path .."functions.lua")
+
+
+fishing_setting.settings["message"] = MESSAGES
+fishing_setting.settings["worm_is_mob"] = WORM_IS_MOB 
+fishing_setting.settings["worm_chance"] = WORM_CHANCE
+fishing_setting.settings["new_worm_source"] = NEW_WORM_SOURCE
+fishing_setting.settings["wear_out"] = WEAR_OUT
+fishing_setting.settings["simple_deco_fishing_pole"] = SIMPLE_DECO_FISHING_POLE
+fishing_setting.settings["bobber_view_range"] = BOBBER_VIEW_RANGE
+fishing_setting.settings.chance["fish"] = CHANCE_FISH
+fishing_setting.settings.chance["tresor"] = CHANCE_TRESOR
+fishing_setting.settings.chance["shark"] = CHANCE_SHARK
+fishing_setting.settings.chance["hungry_fish"] = HUNGRY_FISH
+fishing_setting.settings["tresor_timer"] = TRESOR_TIMER
+fishing_setting.settings["tresor_random_enable"] = TRESOR_RANDOM_ENABLE
+
+
+
+-- load config file if exist in worldpath
+fishing_setting.func.load()
+
+
 dofile(path .."crafting.lua")
 dofile(path .."baits.lua")
 dofile(path .."prizes.lua")
@@ -36,13 +59,13 @@ dofile(path .."poles.lua")
 
 
 -- timer
-fishing_setting.timer = 0
+fishing_setting.timer = fishing_setting.settings["timer_tresor"]
 minetest.register_globalstep(function(dtime)
 	if fishing_setting.enable == false then return end
 	fishing_setting.timer = fishing_setting.timer - dtime
 --	if fishing.new_object then
 	--	new object is item, time to catch is timer
-	--	fishing_setting.timer = fishing_setting.random_timer
+	--	fishing_setting.timer = fishing_setting.settings["timer_tresor"]
 --	end
 --	if timer == 300 then
 		--you have 5min for catch item
@@ -53,9 +76,9 @@ minetest.register_globalstep(function(dtime)
 			--FIXME display message
 		end
 		--get random object
-		fishing_setting.timer = fishing_setting.random_timer
+		fishing_setting.timer = fishing_setting.settings["timer_tresor"]
 	end
 end)
 
 
-
+print("loaded [fishing] mod")

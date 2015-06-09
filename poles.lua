@@ -26,7 +26,7 @@ for _,pole in pairs(fishing_setting.poles) do
 			if pointed_thing and pointed_thing.under then
 				local pt = pointed_thing
 				local node = minetest.get_node(pt.under)
-				if string.find(node.name, "default:water") == nil then return nil end
+				if node.name ~= "default:water_source" and node.name ~= "noairblocks:water_sourcex" and node.name ~= "default:river_water_source" then return nil end
 				local player = user:get_player_name()
 				local inv = user:get_inventory()
 				local bait = inv:get_stack("main", user:get_wield_index()+1 ):get_name()
@@ -45,8 +45,9 @@ for _,pole in pairs(fishing_setting.poles) do
 				local i = 1
 				for _,k in  pairs({ 1, 0, -1}) do
 					for _,l in pairs({ -1, 0, 1}) do
-						if string.find(minetest.get_node({x=pt.under.x+l, y=pt.under.y, z=pt.under.z+k}).name, "default:water") ~= nil 
-							and minetest.get_node({x=pt.under.x+l, y=pt.under.y+1, z=pt.under.z+k}).name == "air" then
+						local node_name = minetest.get_node({x=pt.under.x+l, y=pt.under.y, z=pt.under.z+k}).name
+						if (node_name == "default:water_source" or node_name == "noairblocks:water_sourcex" or node_name == "default:river_water_source")
+						and minetest.get_node({x=pt.under.x+l, y=pt.under.y+1, z=pt.under.z+k}).name == "air" then
 							local empty = true
 							for o, obj in pairs(bobbers) do
 								local p = obj:getpos()
@@ -64,14 +65,17 @@ for _,pole in pairs(fishing_setting.poles) do
 					end
 				end
 				--if water == -3 nodes
-				if #nodes < 1 then return nil end
+				if #nodes < 2 then
+					minetest.chat_send_player(player, "You don't fishing in a bottle!!! ")
+					return nil
+				end
 				local new_pos = nodes[math.random(1, #nodes)]
 				new_pos.y=new_pos.y+(45/64)
 				local ent = minetest.add_entity({interval = 1,x=new_pos.x, y=new_pos.y, z=new_pos.z}, fishing_setting.baits[bait].bobber)
 				if not ent then return nil end
 				local luaentity = ent:get_luaentity()
 				luaentity.owner = player
-				luaentity.prize = ""
+				luaentity.bait = bait
 				luaentity.old_pos = new_pos
 				luaentity.old_pos2 = true
 				if not fishing_setting.is_creative_mode then
@@ -79,7 +83,7 @@ for _,pole in pairs(fishing_setting.poles) do
 				end
 				minetest.sound_play("fishing_bobber2", {pos = new_pos, gain = 0.5})
 				
-				if WEAR_OUT == true and not fishing_setting.is_creative_mode then
+				if fishing_setting.settings["wear_out"] == true and not fishing_setting.is_creative_mode then
 					return rod_wear(itemstack, user, pointed_thing, pole.max_use)	
 				else
 					return {name="fishing:pole_".. pole.name, count=1, wear=0, metadata=""}

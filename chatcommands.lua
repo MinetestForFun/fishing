@@ -1,6 +1,11 @@
 
 
 
+
+
+
+
+
  --FIXME server set fishing enable|disable treasure
 minetest.register_chatcommand("fishing_enable", {
 	params = "",
@@ -14,8 +19,8 @@ minetest.register_chatcommand("fishing_enable", {
 			fishing_setting.enable = false
 			minetest.chat_send_player(name, "treasure is disabled")
 		else
-			minetest.chat_send_player(name, "unknow param ".. tostring(param))
-			minetest.chat_send_player(name, "command is /fishing_enable <true|false>")
+			minetest.chat_send_player(name, "treasure is " .. tostring(fishing_setting.enable))
+			minetest.chat_send_player(name, "To change, type:/fishing_enable <true|false>")
 		end
 		
 
