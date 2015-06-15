@@ -10,22 +10,22 @@ fishing_setting.settings = {}
 --for random object 
 random_objects = {}
 fishing_setting.baits = {}
+fishing_setting.hungry = {}
 fishing_setting.prizes = {}
-fishing_setting.settings["timer_tresor"] = 3600
 fishing_setting.settings.chance = {}
 
 if (minetest.get_modpath("intllib")) then
   dofile(minetest.get_modpath("intllib").."/intllib.lua")
-  fishing_setting.S = intllib.Getter(minetest.get_current_modname())
+  fishing_setting.func.S = intllib.Getter(minetest.get_current_modname())
 else
-  fishing_setting.S = function ( s ) return s end
+  fishing_setting.func.S = function ( s ) return s end
 end
 
 
 dofile(path .."settings.txt")
 dofile(path .."functions.lua")
 
-
+--default_settings
 fishing_setting.settings["message"] = MESSAGES
 fishing_setting.settings["worm_is_mob"] = WORM_IS_MOB 
 fishing_setting.settings["worm_chance"] = WORM_CHANCE
@@ -36,11 +36,8 @@ fishing_setting.settings["bobber_view_range"] = BOBBER_VIEW_RANGE
 fishing_setting.settings.chance["fish"] = CHANCE_FISH
 fishing_setting.settings.chance["tresor"] = CHANCE_TRESOR
 fishing_setting.settings.chance["shark"] = CHANCE_SHARK
-fishing_setting.settings.chance["hungry_fish"] = HUNGRY_FISH
 fishing_setting.settings["tresor_timer"] = TRESOR_TIMER
 fishing_setting.settings["tresor_random_enable"] = TRESOR_RANDOM_ENABLE
-
-
 
 -- load config file if exist in worldpath
 fishing_setting.func.load()
@@ -49,23 +46,25 @@ fishing_setting.func.load()
 dofile(path .."crafting.lua")
 dofile(path .."baits.lua")
 dofile(path .."prizes.lua")
-dofile(path .."amorce.lua")
+dofile(path .."baitball.lua")
 dofile(path .."bobber.lua")
 --dofile(path .."bobber_shark.lua")
 dofile(path .."fishes.lua")
 dofile(path .."trophies.lua")
 dofile(path .."poles.lua")
+dofile(path .."chatcommands.lua")
 
-
+--random hungry bait
+fishing_setting.func.hungry_random()
 
 -- timer
-fishing_setting.timer = fishing_setting.settings["timer_tresor"]
+fishing_setting.timer = fishing_setting.settings["tresor_timer"]
 minetest.register_globalstep(function(dtime)
 	if fishing_setting.enable == false then return end
 	fishing_setting.timer = fishing_setting.timer - dtime
 --	if fishing.new_object then
 	--	new object is item, time to catch is timer
-	--	fishing_setting.timer = fishing_setting.settings["timer_tresor"]
+	--	fishing_setting.timer = fishing_setting.settings["tresor_timer"]
 --	end
 --	if timer == 300 then
 		--you have 5min for catch item
@@ -75,8 +74,8 @@ minetest.register_globalstep(function(dtime)
 			local name = player:get_player_name()
 			--FIXME display message
 		end
-		--get random object
-		fishing_setting.timer = fishing_setting.settings["timer_tresor"]
+		--set random object
+		fishing_setting.timer = fishing_setting.settings["tresor_timer"]
 	end
 end)
 

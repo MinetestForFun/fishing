@@ -1,7 +1,15 @@
 
 
 
-
+minetest.register_chatcommand("fishingset", {
+	params = "",
+	description = "Display volume menu formspec",
+	privs = {interact=true},
+	func = function(name, param)
+		if not name then return end
+		fishing_setting.func.on_show_settings(name)
+	end
+})	
 
 
 

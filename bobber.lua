@@ -1,5 +1,4 @@
 
-
 -- bobber
 minetest.register_node("fishing:bobber_box", {
 	drawtype = "nodebox",
@@ -35,28 +34,27 @@ local FISHING_BOBBER_ENTITY={
 	--			   {left ,bottom, front, right,  top ,  back}
 	collisionbox = {-2/16, -4/16, -2/16,  2/16, 0/16,  2/16},
 	randomtime = 50,
-	amorce = 0,
+	baitball = 0,
 	prize = "",
+	bait = "",
 	
 --  DESTROY BOBBER WHEN PUNCHING IT
 	on_punch = function (self, puncher, time_from_last_punch, tool_capabilities, dir)
 		if not puncher:is_player() then return end
 		local player = puncher:get_player_name()
 		if player ~= self.owner then return end
-		if fishing_setting.settings["message"] == true then minetest.chat_send_player(player, fishing_setting.S("You didn't prizes anything."), false) end
+		if fishing_setting.settings["message"] == true then minetest.chat_send_player(player, fishing_setting.func.S("You didn't prizes anything."), false) end
 		if not fishing_setting.is_creative_mode then
 			local inv = puncher:get_inventory()
 			if inv:room_for_item("main", {name=self.bait, count=1, wear=0, metadata=""}) then
 				inv:add_item("main", {name=self.bait, count=1, wear=0, metadata=""})
-				if fishing_setting.settings["message"] == true then minetest.chat_send_player(player, fishing_setting.S("The bait is still there."), false) end
+				if fishing_setting.settings["message"] == true then minetest.chat_send_player(player, fishing_setting.func.S("The bait is still there."), false) end
 			end
 		end
 		-- make sound and remove bobber
 		minetest.sound_play("fishing_bobber1", { pos = self.object:getpos(), gain = 0.5, })
 		self.object:remove()
 	end,
-	
-	
 	
 	
 --	WHEN RIGHTCLICKING THE BOBBER THE FOLLOWING HAPPENS (CLICK AT THE RIGHT TIME WHILE HOLDING A FISHING POLE)
@@ -71,7 +69,6 @@ local FISHING_BOBBER_ENTITY={
 			if self.prize ~= "" then
 				local name = self.prize[1]..":"..self.prize[2]
 				local desc = self.prize[4]
-				print("You caught "..name.." "..desc)
 				minetest.chat_send_player(player, "You caught "..desc, false)
 				local wear_value = fishing_setting.func.wear_value(self.prize[3])
 				if inv:room_for_item("main", {name=name, count=1, wear=wear_value, metadata=""}) then
@@ -85,11 +82,11 @@ local FISHING_BOBBER_ENTITY={
 			minetest.sound_play("fishing_bobber1", { pos = self.object:getpos(), gain = 0.5, })
 			self.object:remove()
 		
-		elseif item:get_name() == "fishing:amorce" then
+		elseif item:get_name() == "fishing:baitball" then
 			if not fishing_setting.is_creative_mode then
-				inv:remove_item("main", "fishing:amorce")
+				inv:remove_item("main", "fishing:baitball")
 			end
-			self.amorce = 20
+			self.baitball = 20
 			--addparticle
 			minetest.add_particlespawner(30, 0.5,   -- for how long (?)             -- Particles on splash
 				{x=pos.x,y=pos.y-0.0625,z=pos.z}, {x=pos.x,y=pos.y,z=pos.z}, -- position min, pos max
@@ -97,14 +94,11 @@ local FISHING_BOBBER_ENTITY={
 				{x=0,y=-9.8,z=0}, {x=0,y=-9.8,z=0},
 				0.3, 1.2,
 				0.25, 0.5,  -- min size, max size
-				false, "fishing_particle_amorce.png")
+				false, "fishing_particle_baitball.png")
 			-- add sound
 			minetest.sound_play("fishing_bobber1", {pos = self.object:getpos(), gain = 0.2, })
 		end
 	end,
-	
-	
-	
 	
 	
 -- AS SOON AS THE BOBBER IS PLACED IT WILL ACT LIKE
@@ -127,9 +121,7 @@ local FISHING_BOBBER_ENTITY={
 			self.object:setyaw(self.object:getyaw()+((math.random(0,360)-180)/2880*math.pi))
 		end
 		
-		
 		self.timer = self.timer + 1
-		
 		if self.timer < self.randomtime then
 			-- if fish or others items, move bobber to simulate fish on the line
 			if self.prize ~= "" and math.random(1,3) == 1 then
@@ -137,7 +129,6 @@ local FISHING_BOBBER_ENTITY={
 					pos.y = pos.y-0.0325
 					self.object:moveto(pos, false)
 					self.old_pos2 = false
-					--minetest.sound_play("fishing_bobber1", {pos=pos,gain = 0.5,})
 				else
 					pos.y = pos.y+0.0325
 					self.object:moveto(pos, false)
@@ -147,49 +138,32 @@ local FISHING_BOBBER_ENTITY={
 			return	
 		end
 		
-		if self.prize == fishing_setting.prizes.tresor then
-			minetest.chat_send_player(player, "You lost the tresor, bad luck", false)
-		end
-		
 		--change item on line
 		self.timer = 0
 		self.prize = ""
 		self.object:moveto(self.old_pos, false)
-		self.randomtime = math.random(2,12)*10
-		--Once the fish are not hungry :)
-		-- amorce increase lucky + 20%
-		if math.random(1, 100) > fishing_setting.settings.chance["hungry_fish"] + self.amorce then
+		--Once the fish are not hungry :), baitball increase hungry + 20%
+		if math.random(1, 100) > fishing_setting.baits[self.bait]["hungry"] + self.baitball then
+			--Fish not hungry !(
+			self.randomtime = math.random(20,60)*10
 			return
 		end
-
 		
-		local chance = math.random(1, 100)
-		print(" chance: " .. tostring(chance) .. "   randomtime: "..tostring(self.randomtime))
-		--if 1 you catch a tresor, maybe ...
-		if chance == 1 then
-			--You are lucky ? :)
-			if math.random(1, 100) <= fishing_setting.settings.chance["tresor"] then
-				self.prize = fishing_setting.prizes.tresor
-			else
-				self.prize = fishing_setting.prizes.stuff[math.random(1,#fishing_setting.prizes.stuff)]
-			end
-		elseif chance <= fishing_setting.settings.chance["fish"] then
-			self.prize = fishing_setting.prizes.fish[math.random(1,#fishing_setting.prizes.fish)]
+		self.randomtime = math.random(1,5)*10
+		if math.random(1, 100) <= fishing_setting.settings.chance["fish"] then
+			self.prize = fishing_setting.prizes["fish"][math.random(1,#fishing_setting.prizes["fish"])]
 		else
 			if math.random(1, 100) <= 10 then
-				self.prize = fishing_setting.prizes.loose[math.random(1,#fishing_setting.prizes.loose)]
+				self.prize = fishing_setting.prizes["plants"][math.random(1,#fishing_setting.prizes["plants"])]
 			end
 		end
 		
-		if self.prize ~= nil and self.prize ~= "" then
+		if self.prize ~= "" then
 			pos.y = self.old_pos.y-0.1
 			self.object:moveto(pos, false)
 			minetest.sound_play("fishing_bobber1", {pos=pos,gain = 0.5,})
-			print("prize: "..tostring(self.prize[1])..":"..tostring(self.prize[2]))
 		end
 	end,
 }
 
-
 minetest.register_entity("fishing:bobber_entity", FISHING_BOBBER_ENTITY)
-

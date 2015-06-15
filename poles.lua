@@ -9,8 +9,8 @@ end
 
 
 fishing_setting.poles = {}
-fishing_setting.poles.wood = {["name"] = "wood", ["max_use"] = 30, ["desc"] = fishing_setting.S("Fishing Pole") }
-fishing_setting.poles.perfect = {["name"] = "perfect", ["max_use"] = 1500, ["desc"] = fishing_setting.S("Perfect Fishing Pole") }
+fishing_setting.poles.wood = {["name"] = "wood", ["max_use"] = 30, ["desc"] = fishing_setting.func.S("Fishing Pole") }
+fishing_setting.poles.perfect = {["name"] = "perfect", ["max_use"] = 1500, ["desc"] = fishing_setting.func.S("Perfect Fishing Pole") }
 
 
 for _,pole in pairs(fishing_setting.poles) do

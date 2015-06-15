@@ -2,6 +2,7 @@
 -----------------------------------------------------------------------------------------------
 -- Fishing Pole
 -----------------------------------------------------------------------------------------------
+-- Wood Fishing Pole
 minetest.register_craft({
 	output = "fishing:pole_wood",
 	recipe = { 
@@ -57,9 +58,9 @@ minetest.register_craft({
 	}
 })
 
---bait pain
+--bait bread
 minetest.register_craft({
-	output = "fishing:bait_pain 9",
+	output = "fishing:bait_bread 9",
 	recipe = {
 		{"", "farming:bread", ""},
 	}
