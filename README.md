@@ -4,9 +4,9 @@ NOT STABLE VERSION
 
 DO NO USE
 
-IMCOMPLETE CODE
+INCOMPLETE CODE
 
 --rewriting total in progress...
 
 
--- original by 4aiman https://github.com/4aiman/fishing
+-- original by Mossmanikin https://github.com/Mossmanikin/fishing
