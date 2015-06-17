@@ -106,6 +106,13 @@ local FISHING_BOBBER_ENTITY={
 		local pos = self.object:getpos()
 		--remove if no owner, no player, owner no in bobber_view_range
 		if self.owner == nil then self.object:remove(); return end
+		--remove if not node water
+		local node = minetest.get_node_or_nil({x=pos.x, y=pos.y-0.5, z=pos.z})
+		if not node or string.find(node.name, "water_source") == nil then
+			minetest.chat_send_player(self.owner, "Haha, Fishing is prohibited outside water!")
+			self.object:remove()
+			return
+		end
 		local player = minetest.get_player_by_name(self.owner)
 		if not player then self.object:remove(); return end
 		local p = player:getpos()
@@ -150,7 +157,7 @@ local FISHING_BOBBER_ENTITY={
 		end
 		
 		self.randomtime = math.random(1,5)*10
-		if math.random(1, 100) <= fishing_setting.settings.chance["fish"] then
+		if math.random(1, 100) <= fishing_setting.settings["fish_chance"] then
 			self.prize = fishing_setting.prizes["fish"][math.random(1,#fishing_setting.prizes["fish"])]
 		else
 			if math.random(1, 100) <= 10 then

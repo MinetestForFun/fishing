@@ -26,7 +26,8 @@ for _,pole in pairs(fishing_setting.poles) do
 			if pointed_thing and pointed_thing.under then
 				local pt = pointed_thing
 				local node = minetest.get_node(pt.under)
-				if node.name ~= "default:water_source" and node.name ~= "noairblocks:water_sourcex" and node.name ~= "default:river_water_source" then return nil end
+				--if node.name ~= "default:water_source" and node.name ~= "noairblocks:water_sourcex" and node.name ~= "default:river_water_source" then return nil end
+				if not node or string.find(node.name, "water_source") == nil then return nil end
 				local player = user:get_player_name()
 				local inv = user:get_inventory()
 				local bait = inv:get_stack("main", user:get_wield_index()+1 ):get_name()
@@ -46,7 +47,8 @@ for _,pole in pairs(fishing_setting.poles) do
 				for _,k in  pairs({ 1, 0, -1}) do
 					for _,l in pairs({ -1, 0, 1}) do
 						local node_name = minetest.get_node({x=pt.under.x+l, y=pt.under.y, z=pt.under.z+k}).name
-						if (node_name == "default:water_source" or node_name == "noairblocks:water_sourcex" or node_name == "default:river_water_source")
+						--if (node_name == "default:water_source" or node_name == "noairblocks:water_sourcex" or node_name == "default:river_water_source")
+						if node and string.find(node_name, "water_source") ~= nil 
 						and minetest.get_node({x=pt.under.x+l, y=pt.under.y+1, z=pt.under.z+k}).name == "air" then
 							local empty = true
 							for o, obj in pairs(bobbers) do

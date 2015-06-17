@@ -12,7 +12,6 @@ random_objects = {}
 fishing_setting.baits = {}
 fishing_setting.hungry = {}
 fishing_setting.prizes = {}
-fishing_setting.settings.chance = {}
 
 if (minetest.get_modpath("intllib")) then
   dofile(minetest.get_modpath("intllib").."/intllib.lua")
@@ -33,9 +32,9 @@ fishing_setting.settings["new_worm_source"] = NEW_WORM_SOURCE
 fishing_setting.settings["wear_out"] = WEAR_OUT
 fishing_setting.settings["simple_deco_fishing_pole"] = SIMPLE_DECO_FISHING_POLE
 fishing_setting.settings["bobber_view_range"] = BOBBER_VIEW_RANGE
-fishing_setting.settings.chance["fish"] = CHANCE_FISH
-fishing_setting.settings.chance["tresor"] = CHANCE_TRESOR
-fishing_setting.settings.chance["shark"] = CHANCE_SHARK
+fishing_setting.settings["fish_chance"] = FISH_CHANCE
+fishing_setting.settings["shark_chance"] = SHARK_CHANCE
+fishing_setting.settings["tresor_chance"] = TRESOR_CHANCE
 fishing_setting.settings["tresor_timer"] = TRESOR_TIMER
 fishing_setting.settings["tresor_random_enable"] = TRESOR_RANDOM_ENABLE
 
