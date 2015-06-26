@@ -160,7 +160,7 @@ fishing_setting.func.on_show_settings = function(player_name)
 				"button[8.7,1;1,1;cworm;+10]"..
 				"button[9.7,1;1,1;cworm;+1]"..
 				--Chance escape
-				"label[7.2,2;Chance escape]"..
+				"label[7.3,2;Chance escape]"..
 				"button[7,2.5;1,1;cescape;-1]"..
 				"label[8.1,2.7;"..tostring(fishing_setting.tmp_setting["escape_chance"]).."]"..
 				"button[8.7,2.5;1,1;cescape;+1]"..
