@@ -1,12 +1,9 @@
 minetest fishing mod
 
-NOT STABLE VERSION
 
-DO NO USE
+--rewriting total finished 26/06/2015
 
-INCOMPLETE CODE
-
---rewriting total in progress...
-
-
+--rewrited by Crabman77
 -- original by Mossmanikin https://github.com/Mossmanikin/fishing
+
+

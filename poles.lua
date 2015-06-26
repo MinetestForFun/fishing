@@ -21,12 +21,11 @@ for _,pole in pairs(fishing_setting.poles) do
 		wield_image = "fishing_pole_".. pole.name ..".png^[transformFXR270",
 		stack_max = 1,
 		liquids_pointable = true,
-		
+
 		on_use = function (itemstack, user, pointed_thing)
 			if pointed_thing and pointed_thing.under then
 				local pt = pointed_thing
 				local node = minetest.get_node(pt.under)
-				--if node.name ~= "default:water_source" and node.name ~= "noairblocks:water_sourcex" and node.name ~= "default:river_water_source" then return nil end
 				if not node or string.find(node.name, "water_source") == nil then return nil end
 				local player = user:get_player_name()
 				local inv = user:get_inventory()
@@ -38,10 +37,10 @@ for _,pole in pairs(fishing_setting.poles) do
 				local objs = minetest.get_objects_inside_radius(pt.under, 3)
 				for m, obj in pairs(objs) do
 					if obj:get_luaentity() ~= nil and string.find(obj:get_luaentity().name, "fishing:bobber") ~= nil then
-						bobbers[m] = obj		
+						bobbers[m] = obj
 					end
 				end
-				
+
 				local nodes = {}
 				local i = 1
 				for _,k in  pairs({ 1, 0, -1}) do
@@ -68,7 +67,7 @@ for _,pole in pairs(fishing_setting.poles) do
 				end
 				--if water == -3 nodes
 				if #nodes < 2 then
-					minetest.chat_send_player(player, "You don't fishing in a bottle!!! ")
+					if fishing_setting.settings["message"] == true then minetest.chat_send_player(player, "You don't fishing in a bottle!!! ") end
 					return nil
 				end
 				local new_pos = nodes[math.random(1, #nodes)]
@@ -86,16 +85,17 @@ for _,pole in pairs(fishing_setting.poles) do
 				minetest.sound_play("fishing_bobber2", {pos = new_pos, gain = 0.5})
 				
 				if fishing_setting.settings["wear_out"] == true and not fishing_setting.is_creative_mode then
-					return rod_wear(itemstack, user, pointed_thing, pole.max_use)	
+					return rod_wear(itemstack, user, pointed_thing, pole.max_use)
 				else
 					return {name="fishing:pole_".. pole.name, count=1, wear=0, metadata=""}
 				end
 			end
 			return nil
 		end,
-		
-		
+
+
 		on_place = function(itemstack, placer, pointed_thing)
+			if fishing_setting.settings["simple_deco_fishing_pole"] == false then return end
 			local pt = pointed_thing
 			local pt_under_name = minetest.get_node(pt.under).name
 			if pt_under_name ~= "default:water_source" and pt_under_name ~= "default:water_flowing" then
@@ -156,4 +156,3 @@ for _,pole in pairs(fishing_setting.poles) do
 	})
 
 end
-
