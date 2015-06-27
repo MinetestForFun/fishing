@@ -80,7 +80,7 @@ local FISHING_BOBBER_ENTITY={
 					local name = self.prize[1]..":"..self.prize[2]
 					local desc = self.prize[4]
 					if fishing_setting.settings["message"] == true then minetest.chat_send_player(playername, fishing_setting.func.S("You caught "..desc), false) end
-					fishing_setting.func.add_to_trophies(clicker, self.prize[2])
+					fishing_setting.func.add_to_trophies(clicker, self.prize[2], desc)
 					local wear_value = fishing_setting.func.wear_value(self.prize[3])
 					if inv:room_for_item("main", {name=name, count=1, wear=wear_value, metadata=""}) then
 						inv:add_item("main", {name=name, count=1, wear=wear_value, metadata=""})

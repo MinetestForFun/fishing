@@ -110,11 +110,11 @@ end
 
 -- show notification when player catch tresor
 function fishing_setting.func.notify(f_name, tresor)
-	local title = "Good luck to "..f_name ..", He catch the tresor, "..tresor[4].."!"
+	local title = fishing_setting.func.S("Good luck to %s, He catch the tresor, %s!"):format(f_name, tresor[4])
 	for _, player in ipairs(minetest.get_connected_players()) do
 		local player_name = player:get_player_name()
 		if player_name == f_name then
-			minetest.chat_send_player(player_name, "You catch the tresor, "..tresor[4].."!")
+			minetest.chat_send_player(player_name, fishing_setting.func.S("You catch the tresor, %s!"):format(tresor[4]))
 		else
 			minetest.chat_send_player(player_name, title)
 		end
@@ -201,7 +201,7 @@ local inc = function(value, field, min, max)
 	elseif field == "+10" then
 		v = value + 10
 	elseif field == "+60" then	
-		v = value + 60	
+		v = value + 60
 	elseif field == "-1" then	
 		v = value - 1
 	elseif field == "-10" then
@@ -314,7 +314,7 @@ minetest.register_on_joinplayer(function(player)
 end)
 
 
-function fishing_setting.func.add_to_trophies(player, fish)
+function fishing_setting.func.add_to_trophies(player, fish, desc)
 	local player_name = player:get_player_name()
 	if not player_name then return end
 	if fish == "fish" or fish == "shark" or fish == "pike" or fish == "clownfish" or fish == "bluefish" then

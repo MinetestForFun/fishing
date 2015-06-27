@@ -2,7 +2,7 @@
 --fish bait
 --bait_corn
 minetest.register_craftitem("fishing:bait_corn", {
-	description = "Bait corn",
+	description = fishing_setting.func.S("Bait Corn"),
 	inventory_image = "fishing_bait_corn.png",
 })
 
@@ -10,7 +10,7 @@ fishing_setting.baits["fishing:bait_corn"] = { ["bait"] = "fishing:bait_corn", [
 
 --bait_bread
 minetest.register_craftitem("fishing:bait_bread", {
-	description = "Bait Bread",
+	description = fishing_setting.func.S("Bait Bread"),
 	inventory_image = "fishing_bait_bread.png",
 })
 

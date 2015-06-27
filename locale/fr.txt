@@ -1,4 +1,8 @@
 
+# Template
+Bait Corn = Appats au Mais
+Bait Bread = Appats au Pain
+
 ### bobber.lua ###
 You didn't catch anything. = Vous n'avez rien attrape.
 The bait is still there. = L'appat est toujours la.
@@ -53,6 +57,14 @@ You win a new trophie, you have catched %s shark. = Vous gagnez un trophee, vous
 You win a new trophie, you have catched %s pike. = Vous gagnez un trophee, vous avez attrape %s brochets.
 You win a new trophie, you have catched %s clownfish. = Vous gagnez un trophee, vous avez attrape %s poissons clown.
 You win a new trophie, you have catched %s bluefish. = Vous gagnez un trophee, vous avez attrape %s poissons bleu.
+Good luck to %s, He catch the tresor, %s! = %s a de la chance, Il attrappe le tresor, %s!
+You catch the tresor, %s! = Vous attrappez le tresor, %s!
+Yeah, %s catch a Fish. = Wouah, %s a attrappe un poisson
+Yeah, %s catch a Clownfish. = Wouah, %s a attrappe un poisson clown.
+Yeah, %s catch a Bluefish. = Wouah, %s a attrappe un poisson bleu.
+Yeah, %s catch a Northern Pike. = Wouah, %s a attrappe un brochet.
+Yeah, %s catch a small Shark. = Wouah, %s a attrappe un requin.
+
 
 ### material.lua ###
 View information about hunger fish = Afficher les informations sur la faim des poissons

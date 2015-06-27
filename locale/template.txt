@@ -1,3 +1,8 @@
+# Template
+### baits.lua ###
+Bait Corn = 
+Bait Bread = 
+
 
 ### bobber.lua ###
 You didn't catch anything. = 
@@ -51,6 +56,13 @@ You win a new trophie, you have catched %s shark. =
 You win a new trophie, you have catched %s pike. = 
 You win a new trophie, you have catched %s clownfish. = 
 You win a new trophie, you have catched %s bluefish. = 
+Good luck to %s, He catch the tresor, %s! = 
+You catch the tresor, %s! = 
+Yeah, %s catch a Fish. = 
+Yeah, %s catch a Clownfish. = 
+Yeah, %s catch a Bluefish. = 
+Yeah, %s catch a Northern Pike. = 
+Yeah, %s catch a small Shark. = 
 
 
 ### material.lua ###
