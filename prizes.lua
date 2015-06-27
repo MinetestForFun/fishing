@@ -1,14 +1,14 @@
 
 
 fishing_setting.prizes["fish"] = {
-	{"fishing",  				"fish",			0,			"a Fish."},
-	{"fishing",  				"clownfish",			0,			"a Clownfish."},
-	{"fishing",  				"bluefish",			0,			"a Bluefish."}
+	{"fishing",  				"fish_raw",			0,			"a Fish."},
+	{"fishing",  				"clownfish_raw",			0,			"a Clownfish."},
+	{"fishing",  				"bluefish_raw",			0,			"a Bluefish."}
 }
 
 fishing_setting.prizes["shark"] = {
-	{"fishing",  				"shark",			0,			"a small Shark."},
-	{"fishing",  				"pike",				0,			"a Northern Pike."}
+	{"fishing",  				"shark_raw",			0,			"a small Shark."},
+	{"fishing",  				"pike_raw",				0,			"a Northern Pike."}
 }
 
 

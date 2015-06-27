@@ -27,35 +27,35 @@ minetest.register_craftitem("fishing:baitball_shark", {
 minetest.register_craft({
 	type = "shapeless",
 	output = "fishing:baitball_shark 20",
-	recipe = {"fishing:fish", "fishing:fish"}
+	recipe = {"fishing:fish_raw", "fishing:fish_raw"}
 })
 
 minetest.register_craft({
 	type = "shapeless",
 	output = "fishing:baitball_shark 20",
-	recipe = {"fishing:shark", "fishing:shark"}
+	recipe = {"fishing:shark_raw", "fishing:shark_raw"}
 })
 
 minetest.register_craft({
 	type = "shapeless",
 	output = "fishing:baitball_shark 20",
-	recipe = {"fishing:pike", "fishing:pike"}
+	recipe = {"fishing:pike_raw", "fishing:pike_raw"}
 })
 
 minetest.register_craft({
 	type = "shapeless",
 	output = "fishing:baitball_shark 20",
-	recipe = {"fishing:fish", "fishing:shark"}
+	recipe = {"fishing:fish_raw", "fishing:shark_raw"}
 })
 
 minetest.register_craft({
 	type = "shapeless",
 	output = "fishing:baitball_shark 20",
-	recipe = {"fishing:fish", "fishing:pike"}
+	recipe = {"fishing:fish_raw", "fishing:pike_raw"}
 })
 
 minetest.register_craft({
 	type = "shapeless",
 	output = "fishing:baitball_shark 20",
-	recipe = {"fishing:shark", "fishing:pike"}
+	recipe = {"fishing:shark_raw", "fishing:pike_raw"}
 })

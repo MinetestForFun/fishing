@@ -289,8 +289,6 @@ function fishing_setting.func.load_trophies()
 	end
 end
 
-
-
 function fishing_setting.func.save_trophies()
 	local input = io.open(fishing_setting.file_trophies, "w")
 	if input then
@@ -309,7 +307,7 @@ end)
 minetest.register_on_joinplayer(function(player)
 	local playername = player:get_player_name()
 	if fishing_setting.trophies[playername] == nil then
-		fishing_setting.trophies[playername] = { ["fish"] = 0,["shark"] = 0, ["pike"] = 0, ["clownfish"]= 0,  ["bluefish"] = 0 }
+		fishing_setting.trophies[playername] = { ["fish_raw"] = 0,["shark_raw"] = 0, ["pike_raw"] = 0, ["clownfish_raw"]= 0,  ["bluefish_raw"] = 0 }
 	end
 end)
 
@@ -317,7 +315,7 @@ end)
 function fishing_setting.func.add_to_trophies(player, fish, desc)
 	local player_name = player:get_player_name()
 	if not player_name then return end
-	if fish == "fish" or fish == "shark" or fish == "pike" or fish == "clownfish" or fish == "bluefish" then
+	if fish == "fish_raw" or fish == "shark_raw" or fish == "pike_raw" or fish == "clownfish_raw" or fish == "bluefish_raw" then
 		fishing_setting.trophies[player_name][fish] = fishing_setting.trophies[player_name][fish] + 1
 		
 		if fishing_setting.trophies[player_name][fish]%100 == 0 then
@@ -339,7 +337,7 @@ end
 if (minetest.get_modpath("unified_inventory")) then
 	unified_inventory.register_button("menu_fishing", {
 		type = "image",
-		image = "fishing_fish.png",
+		image = "fishing_fish_raw.png",
 		tooltip = "fishing menu configuration",
 		action = function(player)
 			local player_name = player:get_player_name()
