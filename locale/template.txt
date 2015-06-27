@@ -72,7 +72,7 @@ Show information about hunger fish =
 ### poles.lua ###
 Fishing Pole = 
 Perfect Fishing Pole = 
-
+You don't fishing in a bottle! = 
 
 ### trophies.lua ###
 Fish Trophy = 

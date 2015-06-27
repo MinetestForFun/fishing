@@ -7,7 +7,6 @@ local function rod_wear(itemstack, user, pointed_thing, uses)
 	return itemstack
 end
 
-
 fishing_setting.poles = {}
 fishing_setting.poles.wood = {["name"] = "wood", ["max_use"] = 30, ["desc"] = fishing_setting.func.S("Fishing Pole") }
 fishing_setting.poles.perfect = {["name"] = "perfect", ["max_use"] = 1500, ["desc"] = fishing_setting.func.S("Perfect Fishing Pole") }
@@ -46,7 +45,6 @@ for _,pole in pairs(fishing_setting.poles) do
 				for _,k in  pairs({ 1, 0, -1}) do
 					for _,l in pairs({ -1, 0, 1}) do
 						local node_name = minetest.get_node({x=pt.under.x+l, y=pt.under.y, z=pt.under.z+k}).name
-						--if (node_name == "default:water_source" or node_name == "noairblocks:water_sourcex" or node_name == "default:river_water_source")
 						if node and string.find(node_name, "water_source") ~= nil 
 						and minetest.get_node({x=pt.under.x+l, y=pt.under.y+1, z=pt.under.z+k}).name == "air" then
 							local empty = true
@@ -67,7 +65,7 @@ for _,pole in pairs(fishing_setting.poles) do
 				end
 				--if water == -3 nodes
 				if #nodes < 2 then
-					if fishing_setting.settings["message"] == true then minetest.chat_send_player(player, "You don't fishing in a bottle!!! ") end
+					if fishing_setting.settings["message"] == true then minetest.chat_send_player(player, fishing_setting.func.S("You don't fishing in a bottle!")) end
 					return nil
 				end
 				local new_pos = nodes[math.random(1, #nodes)]
@@ -83,7 +81,6 @@ for _,pole in pairs(fishing_setting.poles) do
 					inv:remove_item("main", bait)
 				end
 				minetest.sound_play("fishing_bobber2", {pos = new_pos, gain = 0.5})
-				
 				if fishing_setting.settings["wear_out"] == true and not fishing_setting.is_creative_mode then
 					return rod_wear(itemstack, user, pointed_thing, pole.max_use)
 				else
@@ -93,19 +90,15 @@ for _,pole in pairs(fishing_setting.poles) do
 			return nil
 		end,
 
-
 		on_place = function(itemstack, placer, pointed_thing)
 			if fishing_setting.settings["simple_deco_fishing_pole"] == false then return end
 			local pt = pointed_thing
 			local pt_under_name = minetest.get_node(pt.under).name
-			if pt_under_name ~= "default:water_source" and pt_under_name ~= "default:water_flowing" then
+			if string.find(pt_under_name, "water_") == nil then
 				local wear = itemstack:get_wear()
-				--print (wear)
 				local direction = minetest.dir_to_facedir(placer:get_look_dir())
-				--local meta1 = minetest.get_meta(pt.under)
 				local meta = minetest.get_meta(pt.above)
 				minetest.set_node(pt.above, {name="fishing:pole_".. pole.name .."_deco", param2=direction})
-				--meta1:set_int("wear", wear)
 				meta:set_int("wear", wear)
 				if not fishing_setting.is_creative_mode then
 					itemstack:take_item()
@@ -114,9 +107,6 @@ for _,pole in pairs(fishing_setting.poles) do
 			return itemstack
 		end,
 	})
-	
-
-
 
 	minetest.register_node("fishing:pole_".. pole.name .."_deco", {
 		description = pole.desc,

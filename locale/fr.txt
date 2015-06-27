@@ -73,7 +73,7 @@ View information about hunger fish = Afficher les informations sur la faim des p
 ### poles.lua ###
 Fishing Pole = Canne a peche
 Perfect Fishing Pole = Canne a peche parfaite
-
+You don't fishing in a bottle! = Vous ne pouvez pas pecher dans une bouteille!
 
 ### trophies.lua ###
 Fish Trophy = Trophee poisson
