@@ -59,6 +59,14 @@ function fishing_setting.func.set_settings(new_settings, settings)
 		new_settings["escape_chance"] = settings["escape_chance"]
 	end	
 	
+	if settings["concours"] ~= nil then
+		new_settings["concours"] = settings["concours"]
+	end
+	if settings["duration"] ~= nil then
+		new_settings["duration"] = settings["duration"]
+	end	
+	
+	
 end
 
 
@@ -202,12 +210,16 @@ local inc = function(value, field, min, max)
 		v = value + 10
 	elseif field == "+60" then	
 		v = value + 60
+	elseif field == "+600" then
+		v = value + 600
 	elseif field == "-1" then	
 		v = value - 1
 	elseif field == "-10" then
 		v = value - 10
 	elseif field == "-60" then		
 		v = value - 60
+	elseif field == "-600" then		
+		v = value - 600
 	else -- useless, prevent crash
 		return value
 	end
@@ -302,6 +314,9 @@ end
 minetest.register_on_shutdown(function()
 	minetest.log("action", "[fishing] Server shuts down. saving trophies table")
 	fishing_setting.func.save_trophies()
+	--if fishing_setting.settings["concours"] == true then
+		fishing_setting.func.save_concours()
+	--end
 end)
 
 minetest.register_on_joinplayer(function(player)
@@ -327,6 +342,18 @@ function fishing_setting.func.add_to_trophies(player, fish, desc)
 			else
 				minetest.spawn_item(player:getpos(), {name=name, count=1, wear=0, metadata=""})
 			end
+		end
+		
+		if fishing_setting.settings["concours"] == true then
+			if fishing_setting.concours[fish] == nil then
+				fishing_setting.concours[fish] = {}
+			end
+			if fishing_setting.concours[fish][player_name] == nil then
+				fishing_setting.concours[fish][player_name] = 1
+			else
+				fishing_setting.concours[fish][player_name] = fishing_setting.concours[fish][player_name] + 1
+			end
+			minetest.chat_send_all(fishing_setting.func.S("Yeah, %s catch "..desc):format(player_name))
 		end
 	end
 end
@@ -362,4 +389,201 @@ minetest.register_chatcommand("fishing_config", {
 		fishing_setting.func.on_show_settings(player_name)
 	end
 })
+
+
+
+
+--function save settings 
+function fishing_setting.func.save_concours()
+	local input = io.open(fishing_setting.file_concours, "w")
+	if input then
+		input:write(minetest.serialize(fishing_setting.concours))
+		input:close()
+	else
+		minetest.log("action","Open failed (mode:w) of " .. fishing_setting.file_concours)
+	end
+end
+
+--function load councours data from file 
+function fishing_setting.func.load_concours()
+	local file = io.open(fishing_setting.file_concours, "r")
+	local settings = {}
+	fishing_setting.concours = {}
+	if file then
+		 fishing_setting.concours= minetest.deserialize(file:read("*all"))
+		file:close()
+		if settings == nil or type(settings) ~= "table" then
+			fishing_setting.concours = {}
+		end
+	end
+end
+
+
+
+
+--Menu fishing configuration
+fishing_setting.func.on_show_settings_concours = function(player_name)
+
+	if not fishing_setting.tmp_setting then
+		fishing_setting.tmp_setting = {}
+		fishing_setting.func.set_settings(fishing_setting.tmp_setting, fishing_setting.settings)
+	end
+
+	local formspec = "size[6,6]bgcolor[#99a8ba;]label[2,0;FISHING CONCOURS]"..
+				--Time concours
+				"label[1.6,0.5;Duration]"..
+				"button[0,1;1,1;duration;-60]"..
+				"button[1,1;1,1;duration;-600]"..
+				"label[2.1,1.2;"..tostring(fishing_setting.tmp_setting["duration"]).."]"..
+				"button[2.7,1;1,1;duration;+600]"..
+				"button[3.7,1;1,1;duration;+60]"..
+				--concours enable
+				"label[0.5,2.5;concours enable]"..				
+				"button[3.5,2.3;1,1;concours;"..tostring(fishing_setting.tmp_setting["concours"]).."]"..
+				"label[0.5,4.8;reset classements]"..	
+				"field[3,5;1,1;reset;;]"..
+				
+				
+				"button_exit[0.5,5.2;1.5,1;save;Abort]"..
+				"button_exit[4,5.2;1.5,1;save;Ok]"
+
+	minetest.show_formspec(player_name, "fishing:concours", formspec)
+end
+
+
+
+
+
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+	if formname == "fishing:concours" then
+		local name = player:get_player_name()
+		if not name then return end
+		if fields["save"] == "Ok" then
+			fishing_setting.func.set_settings(fishing_setting.settings, fishing_setting.tmp_setting)
+			fishing_setting.func.save()
+			fishing_setting.tmp_setting = nil
+			return
+		elseif fields["quit"] or fields["abort"] then
+			fishing_setting.tmp_setting = nil
+			return
+		elseif fields["duration"] then
+			fishing_setting.tmp_setting["duration"] = inc(fishing_setting.tmp_setting["duration"], fields["duration"], 120, 14400)
+		elseif fields["concours"] then
+			fishing_setting.tmp_setting["concours"] = bool(fields["concours"])
+		elseif fields["reset"] and fields["reset"]:lower() == "yes" then
+			fishing_setting.concours = {}
+			fishing_setting.func.save_concours()
+		else
+			return
+		end
+
+		fishing_setting.func.on_show_settings_concours(name)
+	end
+end)
+
+
+
+minetest.register_chatcommand("fishing_concours", {
+	params = "fishing_concours <true|false> <time-in-sec>",
+	description = "enable|disable fishing concours (admin only)",
+	privs = {server=true},
+	func = function(player_name, param)
+		if not player_name then return end
+		fishing_setting.func.on_show_settings_concours(player_name)
+	end
+})
+
+
+
+
+function spairs(t, order)
+    -- collect the keys
+    local keys = {}
+    for k in pairs(t) do keys[#keys+1] = k end
+    -- if order function given, sort by it by passing the table and keys a, b,
+    -- otherwise just sort the keys 
+    if order then
+        table.sort(keys, function(a,b) return order(t, a, b) end)
+    else
+        table.sort(keys)
+    end
+    -- return the iterator function
+    local i = 0
+    return function()
+        i = i + 1
+        if keys[i] then
+            return keys[i], t[keys[i]]
+        end
+    end
+end
+
+
+
+function fishing_setting.func.set_winners(list)
+	local win = {}
+	local i = 1
+	-- this uses an custom sorting function ordering by score descending
+	for k,v in spairs(list, function(t,a,b) return t[b] < t[a] end) do
+		table.insert(win, {[k]=v})
+	end	
+	return win
+end
+
+
+
+
+
+
+function fishing_setting.func.get_stat()
+	local winners= {}
+	for k,v in pairs(fishing_setting.concours) do
+		if fishing_setting.concours[k] ~= nil then
+			winners[k] = fishing_setting.func.set_winners(fishing_setting.concours[k])	
+		else
+			winners[k] = {}
+    	end
+    end --bgcolor[#99a8ba;]
+	local formspec = {"size[11,8]bgcolor[#99a8ba;]label[3.5,0;FISHING CONCOURS CLASSEMENT]"}
+	
+	local X = 0
+	local Y
+
+	for fish,fishers in pairs(winners) do
+		Y = 1.5
+		table.insert(formspec, "label["..(X+0.4)..",1;"..tostring(fish):upper().."]") --fish name
+		for _,s in ipairs(fishers) do
+			for pl,nb in pairs(s) do
+				table.insert(formspec, "label["..(X) ..","..Y..";"..tostring(nb).."]") -- nb fish catched
+				table.insert(formspec, "label["..(X+0.4) ..","..Y..";"..tostring(pl).."]") -- playername
+			end
+			Y = Y + 0.5
+		end
+		X = X + 2.2
+	end
+
+	return table.concat(formspec)
+end
+
+
+minetest.register_chatcommand("fishing_class", {
+	params = "display classement",
+	description = "",
+	privs = {interact=true},
+	func = function(player_name, param)
+		if not player_name then return end
+		local formspec = fishing_setting.func.get_stat()
+
+		minetest.show_formspec(player_name, "fishing:classement", formspec)
+	end
+})
+
+
+
+
+
+
+
+
+
+
 

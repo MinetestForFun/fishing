@@ -21,8 +21,9 @@ fishing_setting.func = {}
 fishing_setting.is_creative_mode = minetest.setting_getbool("creative_mode")
 fishing_setting.file_settings = minetest.get_worldpath() .. "/fishing_config.txt"
 fishing_setting.file_trophies = minetest.get_worldpath() .. "/fishing_trophies.txt"
-
+fishing_setting.file_concours = minetest.get_worldpath() .. "/fishing_concours.txt"
 fishing_setting.settings = {}
+fishing_setting.concours = {}
 --for random object 
 random_objects = {}
 fishing_setting.baits = {}
@@ -53,6 +54,8 @@ fishing_setting.settings["shark_chance"] = SHARK_CHANCE
 fishing_setting.settings["tresor_chance"] = TRESOR_CHANCE
 fishing_setting.settings["tresor_enable"] = TRESOR_RANDOM_ENABLE
 fishing_setting.settings["escape_chance"] = ESCAPE_CHANCE
+fishing_setting.settings["concours"] = CONCOURS
+fishing_setting.settings["duration"] = DURATION
 -- load config file if exist in worldpath
 fishing_setting.func.load()
 
@@ -72,7 +75,8 @@ dofile(path .."poles.lua")
 fishing_setting.func.hungry_random()
 --load table catched fish by players
 fishing_setting.func.load_trophies()
-
+--load table concours
+fishing_setting.func.load_concours()
 -----------------------------------------------------------------------------------------------
 minetest.log("action", "[Mod] "..title.." ["..version.."] ["..mname.."] Loaded...")
 -----------------------------------------------------------------------------------------------
