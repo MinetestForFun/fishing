@@ -54,8 +54,7 @@ fishing_setting.settings["shark_chance"] = SHARK_CHANCE
 fishing_setting.settings["tresor_chance"] = TRESOR_CHANCE
 fishing_setting.settings["tresor_enable"] = TRESOR_RANDOM_ENABLE
 fishing_setting.settings["escape_chance"] = ESCAPE_CHANCE
-fishing_setting.settings["concours"] = CONCOURS
-fishing_setting.settings["duration"] = DURATION
+
 -- load config file if exist in worldpath
 fishing_setting.func.load()
 
