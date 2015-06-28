@@ -3,7 +3,7 @@
 fishing_setting.prizes["fish"] = {
 	{"fishing",  				"fish_raw",			0,			"a Fish."},
 	{"fishing",  				"clownfish_raw",			0,			"a Clownfish."},
-	{"fishing",  				"bluefish_raw",			0,			"a Bluefish."}
+	{"fishing",  				"bluewhite_raw",			0,			"a Bluewhite."}
 }
 
 fishing_setting.prizes["shark"] = {

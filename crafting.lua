@@ -94,7 +94,7 @@ minetest.register_craft({
 minetest.register_craft({
 	type = "cooking",
 	output = "fishing:fish_cooked",
-	recipe = "fishing:bluefish_raw",
+	recipe = "fishing:bluewhite_raw",
 	cooktime = 2,
 })
 
@@ -191,18 +191,18 @@ minetest.register_craft({
 minetest.register_craft({
 	type = "shapeless",
 	output = "fishing:baitball_shark 20",
-	recipe = {"fishing:bluefish_raw", "fishing:bluefish_raw"}
+	recipe = {"fishing:bluewhite_raw", "fishing:bluewhite_raw"}
 })
 
 minetest.register_craft({
 	type = "shapeless",
 	output = "fishing:baitball_shark 20",
-	recipe = {"fishing:bluefish_raw", "fishing:fish_raw"}
+	recipe = {"fishing:bluewhite_raw", "fishing:fish_raw"}
 })
 minetest.register_craft({
 	type = "shapeless",
 	output = "fishing:baitball_shark 20",
-	recipe = {"fishing:clownfish_raw", "fishing:bluefish_raw"}
+	recipe = {"fishing:clownfish_raw", "fishing:bluewhite_raw"}
 })
 
 minetest.register_craft({
@@ -218,12 +218,12 @@ minetest.register_craft({
 minetest.register_craft({
 	type = "shapeless",
 	output = "fishing:baitball_shark 20",
-	recipe = {"fishing:bluefish_raw", "fishing:shark_raw"}
+	recipe = {"fishing:bluewhite_raw", "fishing:shark_raw"}
 })
 minetest.register_craft({
 	type = "shapeless",
 	output = "fishing:baitball_shark 20",
-	recipe = {"fishing:bluefish_raw", "fishing:pike_raw"}
+	recipe = {"fishing:bluewhite_raw", "fishing:pike_raw"}
 })
 
 minetest.register_craft({

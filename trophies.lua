@@ -13,7 +13,7 @@ local trophy = {
 	{"fishing",  				"pike_raw",				"Northern Pike",	"fishing_pike_raw.png"},
 	{"fishing",  				"shark_raw",			"Shark",			"fishing_shark_raw.png"},
 	{"fishing",		            "clownfish_raw",		"Clownfish",		"fishing_clownfish_raw.png"},
-	{"fishing",	                "bluefish_raw",	        "Bluefish",	        "fishing_bluefish_raw.png"},
+	{"fishing",	                "bluewhite_raw",	        "Bluewhite",	        "fishing_bluewhite_raw.png"},
 }
 
 local function has_trophy_privilege(meta, player)

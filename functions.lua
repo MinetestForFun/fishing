@@ -347,7 +347,7 @@ end)
 function fishing_setting.func.add_to_trophies(player, fish, desc)
 	local player_name = player:get_player_name()
 	if not player_name then return end
-	if fish == "fish_raw" or fish == "shark_raw" or fish == "pike_raw" or fish == "clownfish_raw" or fish == "bluefish_raw" then
+	if fish == "fish_raw" or fish == "shark_raw" or fish == "pike_raw" or fish == "clownfish_raw" or fish == "bluewhite_raw" then
 		if fishing_setting.trophies[fish] == nil then
 			fishing_setting.trophies[fish] = {}
 		end
@@ -472,7 +472,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			if fields["reset"] and fields["reset"]:lower() == "yes" then
 				fishing_setting.concours["fish_raw"] = {}
 				fishing_setting.concours["clownfish_raw"] = {}
-				fishing_setting.concours["bluefish_raw"] = {}
+				fishing_setting.concours["bluewhite_raw"] = {}
 				fishing_setting.concours["shark_raw"] = {}
 				fishing_setting.concours["pike_raw"] = {}
 			end
@@ -484,11 +484,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			if progress == false and fishing_setting.tmp_setting["concours"] == true then
 				fishing_setting.concours["concours"] = true
 				fishing_setting.concours["warning_said"] = false
-				--TODO show time in H:M:S
 				local time = fishing_setting.func.timetostr(fishing_setting.concours["duration"])
 				minetest.chat_send_all(fishing_setting.func.S("Attention, Fishing contest start (duration %s)!!!"):format(time))
-				--TODO play sound go contest
-				minetest.sound_play("fishing_contest_depart",{gain=0.8})
+				minetest.sound_play("fishing_contest_start",{gain=0.8})
 				
 			elseif progress == true and fishing_setting.tmp_setting["concours"] == false then
 				fishing_setting.concours["concours"] = false
