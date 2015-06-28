@@ -8,11 +8,12 @@ local function rod_wear(itemstack, user, pointed_thing, uses)
 end
 
 fishing_setting.poles = {}
-fishing_setting.poles.wood = {["name"] = "wood", ["max_use"] = 30, ["desc"] = fishing_setting.func.S("Fishing Pole") }
-fishing_setting.poles.perfect = {["name"] = "perfect", ["max_use"] = 1500, ["desc"] = fishing_setting.func.S("Perfect Fishing Pole") }
+fishing_setting.poles.wood = {["name"] = "wood", ["max_use"] = 30, ["desc"] = fishing_setting.func.S("Fishing Pole"),["bobber_max"] = 2 }
+fishing_setting.poles.perfect = {["name"] = "perfect", ["max_use"] = 1500, ["desc"] = fishing_setting.func.S("Perfect Fishing Pole"),["bobber_max"] = 5}
 
 
 for _,pole in pairs(fishing_setting.poles) do
+local bobbermax = pole["bobber_max"]
 	minetest.register_tool("fishing:pole_".. pole.name, {
 		description = pole.desc,
 		groups = {},
@@ -30,26 +31,30 @@ for _,pole in pairs(fishing_setting.poles) do
 				local inv = user:get_inventory()
 				local bait = inv:get_stack("main", user:get_wield_index()+1 ):get_name()
 				if fishing_setting.baits[bait] == nil then return nil end
-				
+
 				--if contest then player must have only 2 boober
 				local bobber_nb = 0
+				local bobber_max
 				if fishing_setting.concours["concours"] ~= nil and fishing_setting.concours["concours"] == true then 
-					for m, obj in pairs(minetest.get_objects_inside_radius(pt.under, 20)) do
-						if obj:get_luaentity() ~= nil and string.find(obj:get_luaentity().name, "fishing:bobber") ~= nil then
-							if obj:get_luaentity().owner == player_name then
-								bobber_nb = bobber_nb + 1
-							end
+					bobber_max = fishing_setting.concours["bobber_nb"]
+				else
+					bobber_max = bobbermax
+				end
+
+				for m, obj in pairs(minetest.get_objects_inside_radius(pt.under, 20)) do
+					if obj:get_luaentity() ~= nil and string.find(obj:get_luaentity().name, "fishing:bobber") ~= nil then
+						if obj:get_luaentity().owner == player_name then
+							bobber_nb = bobber_nb + 1
 						end
-					end
-					if bobber_nb >= fishing_setting.concours["bobber_nb"] then
-						if fishing_setting.settings["message"] == true then 
-							minetest.chat_send_player(player_name, fishing_setting.func.S("You don't have mores %s bobbers!"):format(fishing_setting.concours["bobber_nb"]))
-						end
-						return nil
 					end
 				end
-				
-				
+				if bobber_nb >= bobber_max then
+					if fishing_setting.settings["message"] == true then
+						minetest.chat_send_player(player_name, fishing_setting.func.S("You don't have mores %s bobbers!"):format(bobber_max))
+					end
+					return nil
+				end
+
 				local bobbers = {}
 				local objs = minetest.get_objects_inside_radius(pt.under, 3)
 				for m, obj in pairs(objs) do
