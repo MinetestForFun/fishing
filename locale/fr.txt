@@ -64,7 +64,10 @@ Yeah, %s catch a Clownfish. = Wouah, %s a attrappe un poisson clown.
 Yeah, %s catch a Bluefish. = Wouah, %s a attrappe un poisson bleu.
 Yeah, %s catch a Northern Pike. = Wouah, %s a attrappe un brochet.
 Yeah, %s catch a small Shark. = Wouah, %s a attrappe un requin.
-
+A fishing contest is in progress. (remaining time %s) = Un concour de peche est en cours. (temps restant %s)
+Attention, Fishing contest start(duration %s)!!! = Attention, un concours de peche viens de commence(duree %s)!!!
+WARNING, Fishing contest will finish in 30 seconds. = Attention, le concours de peche se termine dans 30 secondes
+End of fishing contest. = Le concours est fini
 
 ### material.lua ###
 View information about hunger fish = Afficher les informations sur la faim des poissons
@@ -74,6 +77,7 @@ View information about hunger fish = Afficher les informations sur la faim des p
 Fishing Pole = Canne a peche
 Perfect Fishing Pole = Canne a peche parfaite
 You don't fishing in a bottle! = Vous ne pouvez pas pecher dans une bouteille!
+You don't have mores %s bobbers! = Vous ne pouvez pas avoir plus de %s flotteurs
 
 ### trophies.lua ###
 Fish Trophy = Trophee poisson

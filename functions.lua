@@ -15,18 +15,18 @@ function fishing_setting.func.set_settings(new_settings, settings)
 	if settings["message"] ~= nil then
 		new_settings["message"] = settings["message"]
 	end
-	
+
 	if settings["worm_is_mob"] ~= nil then
 		new_settings["worm_is_mob"] = settings["worm_is_mob"]
-	end	
-	
+	end
+
 	if settings["worm_chance"] ~= nil then
 		new_settings["worm_chance"] = settings["worm_chance"]
-	end	
-	
+	end
+
 	if settings["new_worm_source"] ~= nil then
 		new_settings["new_worm_source"] = settings["new_worm_source"]
-	end	
+	end
 	if settings["wear_out"] ~= nil then
 		new_settings["wear_out"] = settings["wear_out"]
 	end
@@ -50,14 +50,14 @@ function fishing_setting.func.set_settings(new_settings, settings)
 	if settings["shark_chance"] ~= nil then
 		new_settings["shark_chance"] = settings["shark_chance"]
 	end
-	
+
 	if settings["tresor_enable"] ~= nil then
 		new_settings["tresor_enable"] = settings["tresor_enable"]
 	end
-	
+
 	if settings["escape_chance"] ~= nil then
 		new_settings["escape_chance"] = settings["escape_chance"]
-	end		
+	end
 end
 
 
@@ -128,8 +128,7 @@ fishing_setting.func.on_show_settings = function(player_name)
 		fishing_setting.tmp_setting = {}
 		fishing_setting.func.set_settings(fishing_setting.tmp_setting, fishing_setting.settings)
 	end
-
-	local formspec = "size[11,9]bgcolor[#99a8ba;]label[4,0;FISHING CONFIGURATION]"..
+	local formspec = "size[10.8,9]label[4,0;FISHING CONFIGURATION]"..
 				--Chance fish
 				"label[1.6,0.5;Chance fish]"..
 				"button[0,1;1,1;cfish;-1]"..
@@ -159,10 +158,12 @@ fishing_setting.func.on_show_settings = function(player_name)
 				"button[8.7,1;1,1;cworm;+10]"..
 				"button[9.7,1;1,1;cworm;+1]"..
 				--Chance escape
-				"label[7.3,2;Chance escape]"..
-				"button[7,2.5;1,1;cescape;-1]"..
+				"label[7.4,2;Chance escape]"..
+				"button[6,2.5;1,1;cescape;-1]"..
+				"button[7,2.5;1,1;cescape;-10]"..
 				"label[8.1,2.7;"..tostring(fishing_setting.tmp_setting["escape_chance"]).."]"..
-				"button[8.7,2.5;1,1;cescape;+1]"..
+				"button[8.7,2.5;1,1;cescape;+10]"..
+				"button[9.7,2.5;1,1;cescape;+1]"..
 				--Bobber view range
 				"label[7.2,3.5;Bobber view range]"..
 				"button[7,4;1,1;bvrange;-1]"..
@@ -175,23 +176,21 @@ fishing_setting.func.on_show_settings = function(player_name)
 				"label[0,6.5;Simple pole deco]"..
 				"button[3.7,6.3;1,1;poledeco;"..tostring(fishing_setting.tmp_setting["simple_deco_fishing_pole"]).."]"..
 				--wearout
-				"label[0,7.3;Poles Wear]"..					
+				"label[0,7.3;Poles Wear]"..
 				"button[3.7,7.1;1,1;wearout;"..tostring(fishing_setting.tmp_setting["wear_out"]).."]"..
 				--TRESOR_ENABLE
 				"label[6,5.7;Tresor enable]"..
 				"button[9.7,5.5;1,1;tresorenable;"..tostring(fishing_setting.tmp_setting["tresor_enable"]).."]"..
 				--NEW_WORM_SOURCE
-				"label[6,6.5;New worm source]"..
+				"label[6,6.5;New worm source (reboot)]"..
 				"button[9.7,6.3;1,1;newworm;"..tostring(fishing_setting.tmp_setting["new_worm_source"]).."]"..
 				--WORM_IS_MOB
-				"label[6,7.3;Worm is mob]"..				
+				"label[6,7.3;Worm is mob (reboot)]"..
 				"button[9.7,7.1;1,1;wormmob;"..tostring(fishing_setting.tmp_setting["worm_is_mob"]).."]"..
-				"button_exit[0.5,8.2;1.5,1;save;Abort]"..
-				"button_exit[9,8.2;1.5,1;save;Ok]"
-	
+				"button_exit[0,8.2;1.5,1;save;Abort]"..
+				"button_exit[9.2,8.2;1.5,1;save;Ok]"
 	minetest.show_formspec(player_name, "fishing:settings", formspec)
 end
-
 
 local inc = function(value, field, min, max)
 	local v
@@ -199,17 +198,17 @@ local inc = function(value, field, min, max)
 		v = value + 1
 	elseif field == "+10" then
 		v = value + 10
-	elseif field == "+60" then	
+	elseif field == "+60" then
 		v = value + 60
 	elseif field == "+600" then
 		v = value + 600
-	elseif field == "-1" then	
+	elseif field == "-1" then
 		v = value - 1
 	elseif field == "-10" then
 		v = value - 10
-	elseif field == "-60" then		
+	elseif field == "-60" then
 		v = value - 60
-	elseif field == "-600" then		
+	elseif field == "-600" then
 		v = value - 600
 	else -- useless, prevent crash
 		return value
@@ -236,9 +235,9 @@ local bool = function(field)
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
+	local player_name = player:get_player_name()
+	if not player_name then return end
 	if formname == "fishing:settings" then
-		local name = player:get_player_name()
-		if not name then return end
 		if fields["save"] == "Ok" then
 			fishing_setting.func.set_settings(fishing_setting.settings, fishing_setting.tmp_setting)
 			fishing_setting.func.save()
@@ -258,7 +257,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		elseif fields["cworm"] then
 			fishing_setting.tmp_setting["worm_chance"] = inc(fishing_setting.tmp_setting["worm_chance"], fields["cworm"], 1, 100)
 		elseif fields["cescape"] then
-			fishing_setting.tmp_setting["escape_chance"] = inc(fishing_setting.tmp_setting["escape_chance"], fields["cescape"], 1, 30)
+			fishing_setting.tmp_setting["escape_chance"] = inc(fishing_setting.tmp_setting["escape_chance"], fields["cescape"], 1, 50)
 		elseif fields["dmessages"] then
 			fishing_setting.tmp_setting["message"] = bool(fields["dmessages"])
 		elseif fields["poledeco"] then
@@ -275,7 +274,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			return
 		end
 
-		fishing_setting.func.on_show_settings(name)
+		fishing_setting.func.on_show_settings(player_name)
+	elseif formname == "fishing:admin_conf" then
+		if fields["classement"] then
+			local formspec = fishing_setting.func.get_stat()
+			minetest.show_formspec(player_name, "fishing:classement", formspec)
+		elseif fields["concours"] then
+			fishing_setting.func.on_show_settings_concours(player_name)
+		elseif fields["configuration"] then
+			fishing_setting.func.on_show_settings(player_name)
+		end
 	end
 end)
 
@@ -309,14 +317,32 @@ minetest.register_on_shutdown(function()
 end)
 
 
---[[
+
+function fishing_setting.func.timetostr(time)
+	local countdown = time
+	local answer = ""
+	if countdown >= 3600 then
+		local hours = math.floor(countdown / 3600)
+		countdown = countdown % 3600
+		answer = hours .. "H"
+	end
+	if countdown >= 60 then
+		local minutes = math.floor(countdown / 60)
+		countdown = countdown % 60
+		answer = answer .. minutes .. "M"
+	end
+	local seconds = countdown
+	answer = answer .. math.floor(seconds) .. "S"
+	return answer
+end
+
 minetest.register_on_joinplayer(function(player)
-	local playername = player:get_player_name()
---	if fishing_setting.trophies[fish][playername] == nil then
---		fishing_setting.trophies[fish][playername] = { ["fish_raw"] = 0,["shark_raw"] = 0, ["pike_raw"] = 0, ["clownfish_raw"]= 0,  ["bluefish_raw"] = 0 }
---	end
+	local player_name = player:get_player_name()
+	if fishing_setting.concours["concours"] == true then
+		minetest.chat_send_player(player_name, fishing_setting.func.S("A fishing contest is in progress. (remaining time %s)"):format(fishing_setting.func.timetostr(fishing_setting.concours["duration"])))
+	end
 end)
---]]
+
 
 function fishing_setting.func.add_to_trophies(player, fish, desc)
 	local player_name = player:get_player_name()
@@ -348,6 +374,15 @@ function fishing_setting.func.add_to_trophies(player, fish, desc)
 end
 
 
+--Menu fishing configuration
+fishing_setting.func.on_show_admin_menu = function(player_name)
+	local formspec = "size[5,5]label[1.6,0;FISHING MENU]"..
+					"button[1,0.5;3,1;classement;Classement concours]"..
+					"button[1,1.5;3,1;concours;Concours]"..
+					"button[1,2.5;3,1;configuration;Configuration]"..
+					"button_exit[1,4.5;3,1;close;Close]"
+	minetest.show_formspec(player_name, "fishing:admin_conf", formspec)
+end
 
 
 if (minetest.get_modpath("unified_inventory")) then
@@ -359,27 +394,15 @@ if (minetest.get_modpath("unified_inventory")) then
 			local player_name = player:get_player_name()
 			if not player_name then return end
 			if minetest.check_player_privs(player_name, {server=true}) then
-				fishing_setting.func.on_show_settings(player_name)
+				fishing_setting.func.on_show_admin_menu(player_name)
 			else
-				minetest.chat_send_player(player_name, fishing_setting.func.S("You don't have the server priviledge!"))			
-			
+				local formspec = fishing_setting.func.get_stat()
+				minetest.show_formspec(player_name, "fishing:classement", formspec)
 			end
 		
 		end,
 	})
 end
-
-minetest.register_chatcommand("fishing_config", {
-	params = "",
-	description = "Display fishing configuration menu (admin only)",
-	privs = {server=true},
-	func = function(player_name, param)
-		if not player_name then return end
-		fishing_setting.func.on_show_settings(player_name)
-	end
-})
-
-
 
 
 --function save settings 
@@ -397,54 +420,48 @@ end
 function fishing_setting.func.load_concours()
 	local file = io.open(fishing_setting.file_concours, "r")
 	local settings = {}
-	fishing_setting.concours = {["concours"] = false, ["duration"] = 3600}
+	fishing_setting.concours = {["concours"] = false, ["duration"] = 3600, ["bobber_nb"] = 4}
 	if file then
 		 fishing_setting.concours= minetest.deserialize(file:read("*all"))
 		file:close()
 		if settings == nil or type(settings) ~= "table" then
-			fishing_setting.concours = {["concours"] = false, ["duration"] = 3600}
+			fishing_setting.concours = {["concours"] = false, ["duration"] = 3600, ["bobber_nb"] = 4}
 		end
 	end
 end
 
 
-
-
 --Menu fishing configuration
 fishing_setting.func.on_show_settings_concours = function(player_name)
-
 	if not fishing_setting.tmp_setting then
-		fishing_setting.tmp_setting = {["concours"] = (fishing_setting.concours["concours"] or false), ["duration"] = 3600, ["reset"] = ""}
+		fishing_setting.tmp_setting = { ["concours"] = (fishing_setting.concours["concours"] or false),
+										["duration"] = (math.floor(fishing_setting.concours["duration"]) or 3600),
+										["bobber_nb"] = (fishing_setting.concours["bobber_nb"] or 2),
+										["reset"] = ""
+										}
 	end
-
-	local formspec = "size[6,6]bgcolor[#99a8ba;]label[1.8,0;FISHING CONCOURS]"..
+	local formspec = "size[6.1,7]label[1.9,0;FISHING CONCOURS]"..
 				--Time concours
-				"label[2,0.5;Duration]"..
-				"button[1,1;1,1;duration;-60]"..
-				"button[2,1;1,1;duration;-600]"..
-				"label[2.9,1.2;"..tostring(fishing_setting.tmp_setting["duration"]).."]"..
-				"button[3.7,1;1,1;duration;+600]"..
-				"button[4.7,1;1,1;duration;+60]"..
+				"label[2.2,0.5;Duration(in sec)]"..
+				"button[0.8,1;1,1;duration;-60]"..
+				"button[1.8,1;1,1;duration;-600]"..
+				"label[2.7,1.2;"..tostring(fishing_setting.tmp_setting["duration"]).."]"..
+				"button[3.5,1;1,1;duration;+600]"..
+				"button[4.5,1;1,1;duration;+60]"..
+				--bobber nb
+				"label[2,2;Bobber number limit]"..
+				"button[1.8,2.5;1,1;bobbernb;-1]"..
+				"label[2.9,2.7;"..tostring(fishing_setting.tmp_setting["bobber_nb"]).."]"..
+				"button[3.5,2.5;1,1;bobbernb;+1]"..
 				--concours enable
-				"label[1,2.5;concours enable]"..				
-				"button[4.7,2.3;1,1;concours;"..tostring(fishing_setting.tmp_setting["concours"]).."]"..
+				"label[0.8,3.8;concours enable]"..
+				"button[4.5,3.6;1,1;concours;"..tostring(fishing_setting.tmp_setting["concours"]).."]"..
 				--reset
-				"label[1,3.3;reset classements(type 'yes')]"..	
-				"field[5,3.5;1,1;reset;;]"..
-				
-				
-				"button_exit[0.5,5.2;1.5,1;save;Abort]"..
-				"button_exit[4,5.2;1.5,1;save;Ok]"
-
+				"label[0.8,5.2;reset classements (type 'yes')]"..
+				"field[4.8,5.4;1,1;reset;;]"..
+				"button_exit[0.8,6.2;1.5,1;save;Abort]"..
+				"button_exit[4,6.2;1.5,1;save;Ok]"
 	minetest.show_formspec(player_name, "fishing:concours", formspec)
-end
-
-local function timetostr(time)
-	--TODO transform time in H:M:S str
-	
-	
-	
-	return time
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
@@ -463,14 +480,15 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			local progress = (fishing_setting.concours["concours"] or false)
 			fishing_setting.concours["duration"] = fishing_setting.tmp_setting["duration"]
 			fishing_setting.concours["concours"] = fishing_setting.tmp_setting["concours"]
-			
+			fishing_setting.concours["bobber_nb"] = fishing_setting.tmp_setting["bobber_nb"]
 			if progress == false and fishing_setting.tmp_setting["concours"] == true then
 				fishing_setting.concours["concours"] = true
 				fishing_setting.concours["warning_said"] = false
 				--TODO show time in H:M:S
-				local time = timetostr(fishing_setting.concours["duration"])
-				minetest.chat_send_all(fishing_setting.func.S("Attention, Fishing contest go(duration %s)!!!"):format(time))
+				local time = fishing_setting.func.timetostr(fishing_setting.concours["duration"])
+				minetest.chat_send_all(fishing_setting.func.S("Attention, Fishing contest start (duration %s)!!!"):format(time))
 				--TODO play sound go contest
+				minetest.sound_play("fishing_contest_depart",{gain=0.8})
 				
 			elseif progress == true and fishing_setting.tmp_setting["concours"] == false then
 				fishing_setting.concours["concours"] = false
@@ -485,23 +503,14 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			fishing_setting.tmp_setting["duration"] = inc(fishing_setting.tmp_setting["duration"], fields["duration"], 120, 14400)
 		elseif fields["concours"] then
 			fishing_setting.tmp_setting["concours"] = bool(fields["concours"])
+		elseif fields["bobbernb"] then
+			fishing_setting.tmp_setting["bobber_nb"] = inc(fishing_setting.tmp_setting["bobber_nb"], fields["bobbernb"], 1, 8)			
 		else
 			return
 		end
 		fishing_setting.func.on_show_settings_concours(name)
 	end
 end)
-
-
-minetest.register_chatcommand("fishing_concours", {
-	params = "fishing_concours <true|false> <time-in-sec>",
-	description = "enable|disable fishing concours (admin only)",
-	privs = {server=true},
-	func = function(player_name, param)
-		if not player_name then return end
-		fishing_setting.func.on_show_settings_concours(player_name)
-	end
-})
 
 
 function spairs(t, order)
@@ -526,7 +535,6 @@ function spairs(t, order)
 end
 
 
-
 function fishing_setting.func.set_winners(list)
 	local win = {}
 	local i = 1
@@ -541,26 +549,22 @@ function fishing_setting.func.set_winners(list)
 end
 
 
-
-
-
-
 function fishing_setting.func.get_stat()
 	local winners= {}
 	for k,v in pairs(fishing_setting.concours) do
 		if string.find(k, "_raw") ~= nil then
 			if fishing_setting.concours[k] ~= nil then
-				winners[k] = fishing_setting.func.set_winners(fishing_setting.concours[k])	
+				winners[k] = fishing_setting.func.set_winners(fishing_setting.concours[k])
 			else
 				winners[k] = {}
-    		end
-    	end
-    end
-	local formspec = {"size[12,8]bgcolor[#99a8ba;]label[3.5,0;FISHING CONCOURS CLASSEMENT]"}
+			end
+		end
+	end
+	local formspec = {"size[12,8]label[3.7,0;FISHING CONCOURS CLASSEMENT]"}
 	local X = 0
 	local Y
 	for fish, fishers in pairs(winners) do
-		Y = 1.4
+		Y = 1.1
 		table.insert(formspec, "label["..(X+0.4)..",0.5;"..string.gsub(fish, "_raw", ""):upper().."]") --fish name
 		for _,s in ipairs(fishers) do
 			for pl,nb in pairs(s) do
@@ -571,32 +575,40 @@ function fishing_setting.func.get_stat()
 		end
 		X = X + 2.3
 	end
+	table.insert(formspec, "button_exit[5.5,7.5;1.2,1;close;CLose]")
 	return table.concat(formspec)
 end
 
 
-minetest.register_chatcommand("fishing_class", {
+minetest.register_chatcommand("fishing_menu", {
+	params = "",
+	description = "Show fishing menu (admin only)",
+	privs = {server=true},
+	func = function(player_name, param)
+		if not player_name then return end
+		fishing_setting.func.on_show_admin_menu(player_name)
+	end
+})
+
+minetest.register_chatcommand("fishing_classement", {
 	params = "display classement",
 	description = "",
 	privs = {interact=true},
 	func = function(player_name, param)
 		if not player_name then return end
 		local formspec = fishing_setting.func.get_stat()
-
 		minetest.show_formspec(player_name, "fishing:classement", formspec)
 	end
 })
 
 local function show_result()
 	minetest.after(3, function()
-		print("debug1")
 		local formspec = fishing_setting.func.get_stat()
 		for _,player in pairs(minetest.get_connected_players()) do
 			local player_name = player:get_player_name()
 			if player_name ~= nil then
-				print("debug2")
 				minetest.show_formspec(player_name, "fishing:classement", formspec)
-			end	
+			end
 		end
 	end)
 end
@@ -606,11 +618,12 @@ minetest.register_globalstep(function(dtime)
 		fishing_setting.concours["duration"] = fishing_setting.concours["duration"] - dtime
 		
 		if fishing_setting.concours["duration"] < 30 and fishing_setting.concours["warning_said"] ~= true then
-			minetest.chat_send_all("WARNING, Fishing contest will finish in 30 seconds")
+			minetest.chat_send_all(fishing_setting.func.S("WARNING, Fishing contest will finish in 30 seconds."))
 			fishing_setting.concours["warning_said"] = true
 		end
 		if fishing_setting.concours["duration"] < 0 then
-			minetest.chat_send_all("End of fishing contest")
+			minetest.chat_send_all(fishing_setting.func.S("End of fishing contest."))
+			minetest.sound_play("fishing_contest_end",{gain=0.8})
 			fishing_setting.concours["concours"] = false
 			show_result()
 		end

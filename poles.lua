@@ -26,10 +26,28 @@ for _,pole in pairs(fishing_setting.poles) do
 				local pt = pointed_thing
 				local node = minetest.get_node(pt.under)
 				if not node or string.find(node.name, "water_source") == nil then return nil end
-				local player = user:get_player_name()
+				local player_name = user:get_player_name()
 				local inv = user:get_inventory()
 				local bait = inv:get_stack("main", user:get_wield_index()+1 ):get_name()
 				if fishing_setting.baits[bait] == nil then return nil end
+				
+				--if contest then player must have only 2 boober
+				local bobber_nb = 0
+				if fishing_setting.concours["concours"] ~= nil and fishing_setting.concours["concours"] == true then 
+					for m, obj in pairs(minetest.get_objects_inside_radius(pt.under, 20)) do
+						if obj:get_luaentity() ~= nil and string.find(obj:get_luaentity().name, "fishing:bobber") ~= nil then
+							if obj:get_luaentity().owner == player_name then
+								bobber_nb = bobber_nb + 1
+							end
+						end
+					end
+					if bobber_nb >= fishing_setting.concours["bobber_nb"] then
+						if fishing_setting.settings["message"] == true then 
+							minetest.chat_send_player(player_name, fishing_setting.func.S("You don't have mores %s bobbers!"):format(fishing_setting.concours["bobber_nb"]))
+						end
+						return nil
+					end
+				end
 				
 				
 				local bobbers = {}
@@ -65,7 +83,7 @@ for _,pole in pairs(fishing_setting.poles) do
 				end
 				--if water == -3 nodes
 				if #nodes < 2 then
-					if fishing_setting.settings["message"] == true then minetest.chat_send_player(player, fishing_setting.func.S("You don't fishing in a bottle!")) end
+					if fishing_setting.settings["message"] == true then minetest.chat_send_player(player_name, fishing_setting.func.S("You don't fishing in a bottle!")) end
 					return nil
 				end
 				local new_pos = nodes[math.random(1, #nodes)]
@@ -73,7 +91,7 @@ for _,pole in pairs(fishing_setting.poles) do
 				local ent = minetest.add_entity({interval = 1,x=new_pos.x, y=new_pos.y, z=new_pos.z}, fishing_setting.baits[bait].bobber)
 				if not ent then return nil end
 				local luaentity = ent:get_luaentity()
-				luaentity.owner = player
+				luaentity.owner = player_name
 				luaentity.bait = bait
 				luaentity.old_pos = new_pos
 				luaentity.old_pos2 = true

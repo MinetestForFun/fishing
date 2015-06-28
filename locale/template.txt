@@ -63,7 +63,10 @@ Yeah, %s catch a Clownfish. =
 Yeah, %s catch a Bluefish. = 
 Yeah, %s catch a Northern Pike. = 
 Yeah, %s catch a small Shark. = 
-
+A fishing contest is in progress. (remaining time %s) = 
+Attention, Fishing contest start(duration %s)!!! = 
+WARNING, Fishing contest will finish in 30 seconds. = 
+End of fishing contest. = 
 
 ### material.lua ###
 Show information about hunger fish = 
@@ -73,6 +76,7 @@ Show information about hunger fish =
 Fishing Pole = 
 Perfect Fishing Pole = 
 You don't fishing in a bottle! = 
+You don't have mores %s bobbers! = 
 
 ### trophies.lua ###
 Fish Trophy = 
