@@ -422,10 +422,33 @@ function fishing_setting.func.load_concours()
 	local settings = {}
 	fishing_setting.concours = {["concours"] = false, ["duration"] = 3600, ["bobber_nb"] = 4}
 	if file then
-		 fishing_setting.concours= minetest.deserialize(file:read("*all"))
+		 settings = minetest.deserialize(file:read("*all"))
 		file:close()
-		if settings == nil or type(settings) ~= "table" then
-			fishing_setting.concours = {["concours"] = false, ["duration"] = 3600, ["bobber_nb"] = 4}
+		if settings ~= nil and type(settings) == "table" then
+			if settings["concours"] ~= nil then
+				fishing_setting.concours["concours"] = settings["concours"]
+			end
+			if settings["duration"] ~= nil then
+				fishing_setting.concours["duration"] = settings["duration"]
+			end
+			if settings["bobber_nb"] ~= nil then
+				fishing_setting.concours["bobber_nb"] = settings["bobber_nb"]
+			end
+			if settings["fish_raw"] ~= nil then
+				fishing_setting.concours["fish_raw"] = settings["fish_raw"]
+			end
+			if settings["clownfish_raw"] ~= nil then
+				fishing_setting.concours["clownfish_raw"] = settings["clownfish_raw"]
+			end
+			if settings["bluewhite_raw"] ~= nil then
+				fishing_setting.concours["bluewhite_raw"] = settings["bluewhite_raw"]
+			end
+			if settings["shark_raw"] ~= nil then
+				fishing_setting.concours["shark_raw"] = settings["shark_raw"]
+			end
+			if settings["pike_raw"] ~= nil then
+				fishing_setting.concours["pike_raw"] = settings["pike_raw"]
+			end
 		end
 	end
 end
@@ -502,7 +525,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		elseif fields["concours"] then
 			fishing_setting.tmp_setting["concours"] = bool(fields["concours"])
 		elseif fields["bobbernb"] then
-			fishing_setting.tmp_setting["bobber_nb"] = inc(fishing_setting.tmp_setting["bobber_nb"], fields["bobbernb"], 1, 8)			
+			fishing_setting.tmp_setting["bobber_nb"] = inc(fishing_setting.tmp_setting["bobber_nb"], fields["bobbernb"], 1, 8)
 		else
 			return
 		end
@@ -599,7 +622,7 @@ minetest.register_chatcommand("fishing_classement", {
 	end
 })
 
-local function show_result()
+function fishing_setting.func.show_result()
 	minetest.after(3, function()
 		local formspec = fishing_setting.func.get_stat()
 		for _,player in pairs(minetest.get_connected_players()) do
@@ -611,20 +634,5 @@ local function show_result()
 	end)
 end
 
-minetest.register_globalstep(function(dtime)
-	if fishing_setting.concours["concours"] == true then
-		fishing_setting.concours["duration"] = fishing_setting.concours["duration"] - dtime
-		
-		if fishing_setting.concours["duration"] < 30 and fishing_setting.concours["warning_said"] ~= true then
-			minetest.chat_send_all(fishing_setting.func.S("WARNING, Fishing contest will finish in 30 seconds."))
-			fishing_setting.concours["warning_said"] = true
-		end
-		if fishing_setting.concours["duration"] < 0 then
-			minetest.chat_send_all(fishing_setting.func.S("End of fishing contest."))
-			minetest.sound_play("fishing_contest_end",{gain=0.8})
-			fishing_setting.concours["concours"] = false
-			show_result()
-		end
-	end
-end)
+
 
