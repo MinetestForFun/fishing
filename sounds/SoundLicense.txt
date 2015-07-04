@@ -6,5 +6,6 @@ The included sounds are http://creativecommons.org/licenses/by-nc-sa/3.0/
 
 "fishing_contest_start" resampled from "cor 9.mp3", Pierre Grandjean, https://www.freesound.org/people/Pierre%20Grandjean/sounds/125973/
 
-
 "fishing_contest_end" resampled from "Trompette 8", jebb, https://www.freesound.org/people/jebb/sounds/205848/
+
+"fishing_baitball" resampled from "dog steps around in water" , noctaro, https://www.freesound.org/people/noctaro/sounds/243574/

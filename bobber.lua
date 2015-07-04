@@ -107,7 +107,7 @@ local FISHING_BOBBER_ENTITY={
 				0.25, 0.5,  -- min size, max size
 				false, "fishing_particle_baitball.png")
 			-- add sound
-			minetest.sound_play("fishing_bobber1", {pos = self.object:getpos(), gain = 0.2, })
+			minetest.sound_play("fishing_baitball", {pos = self.object:getpos(), gain = 0.2, })
 		end
 	end,
 
