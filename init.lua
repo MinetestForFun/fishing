@@ -21,9 +21,9 @@ fishing_setting.func = {}
 fishing_setting.is_creative_mode = minetest.setting_getbool("creative_mode")
 fishing_setting.file_settings = minetest.get_worldpath() .. "/fishing_config.txt"
 fishing_setting.file_trophies = minetest.get_worldpath() .. "/fishing_trophies.txt"
-fishing_setting.file_concours = minetest.get_worldpath() .. "/fishing_concours.txt"
+fishing_setting.file_contest = minetest.get_worldpath() .. "/fishing_contest.txt"
 fishing_setting.settings = {}
-fishing_setting.concours = {}
+fishing_setting.contest = {}
 --for random object 
 random_objects = {}
 fishing_setting.baits = {}
@@ -51,8 +51,8 @@ fishing_setting.settings["simple_deco_fishing_pole"] = SIMPLE_DECO_FISHING_POLE
 fishing_setting.settings["bobber_view_range"] = BOBBER_VIEW_RANGE
 fishing_setting.settings["fish_chance"] = FISH_CHANCE
 fishing_setting.settings["shark_chance"] = SHARK_CHANCE
-fishing_setting.settings["tresor_chance"] = TRESOR_CHANCE
-fishing_setting.settings["tresor_enable"] = TRESOR_RANDOM_ENABLE
+fishing_setting.settings["treasure_chance"] = TRESOR_CHANCE
+fishing_setting.settings["treasure_enable"] = TRESOR_RANDOM_ENABLE
 fishing_setting.settings["escape_chance"] = ESCAPE_CHANCE
 
 -- load config file if exist in worldpath
@@ -72,24 +72,24 @@ dofile(path .."poles.lua")
 
 --random hungry bait
 fishing_setting.func.hungry_random()
---load table catched fish by players
+--load table caught fish by players
 fishing_setting.func.load_trophies()
---load table concours
-fishing_setting.func.load_concours()
+--load table contest
+fishing_setting.func.load_contest()
 
 
 minetest.register_globalstep(function(dtime)
-	if fishing_setting.concours["concours"] ~= nil and fishing_setting.concours["concours"] == true then
-		fishing_setting.concours["duration"] = fishing_setting.concours["duration"] - dtime
+	if fishing_setting.contest["contest"] ~= nil and fishing_setting.contest["contest"] == true then
+		fishing_setting.contest["duration"] = fishing_setting.contest["duration"] - dtime
 		
-		if fishing_setting.concours["duration"] < 30 and fishing_setting.concours["warning_said"] ~= true then
+		if fishing_setting.contest["duration"] < 30 and fishing_setting.contest["warning_said"] ~= true then
 			minetest.chat_send_all(fishing_setting.func.S("WARNING, Fishing contest will finish in 30 seconds."))
-			fishing_setting.concours["warning_said"] = true
+			fishing_setting.contest["warning_said"] = true
 		end
-		if fishing_setting.concours["duration"] < 0 then
+		if fishing_setting.contest["duration"] < 0 then
 			minetest.chat_send_all(fishing_setting.func.S("End of fishing contest."))
 			minetest.sound_play("fishing_contest_end",{gain=0.8})
-			fishing_setting.concours["concours"] = false
+			fishing_setting.contest["contest"] = false
 			fishing_setting.func.show_result()
 		end
 	end

@@ -50,11 +50,11 @@ Roasted Northern Pike = Gebratener Hecht
 
 ### functions.lua ###
 You don't have the server priviledge! = 
-You win a new trophie, you have catched %s fish. = 
-You win a new trophie, you have catched %s shark. =
-You win a new trophie, you have catched %s pike. = 
-You win a new trophie, you have catched %s clownfish. = 
-You win a new trophie, you have catched %s bluewhite. = 
+You win a new trophy, you have caught %s fish. = 
+You win a new trophy, you have caught %s shark. =
+You win a new trophy, you have caught %s pike. = 
+You win a new trophy, you have caught %s clownfish. = 
+You win a new trophy, you have caught %s bluewhite. = 
 
 
 ### material.lua ###

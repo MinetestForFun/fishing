@@ -37,10 +37,10 @@ local stuff = {
 fishing_setting.prizes["stuff"] = fishing_setting.func.ignore_mod(stuff)
 
 
-local tresor = {
+local treasure = {
 	{"default",					"mese",						0,					"a mese block."},
 	{"default",					"nyancat",					0,					"a Nyan Cat."},
 	{"default",					"diamondblock",				0,					"a Diamond Block."},
 }
-fishing_setting.prizes["tresor"] = fishing_setting.func.ignore_mod(tresor)
+fishing_setting.prizes["treasure"] = fishing_setting.func.ignore_mod(treasure)
 
