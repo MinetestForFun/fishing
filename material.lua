@@ -1,6 +1,6 @@
 
 
--- useless or useful ???
+-- useless or useful ??? No activated
 minetest.register_node("fishing:material_info", {
 	description = fishing_setting.func.S("Show information about hunger fish"),
 	name   = "Fishing Info Center",

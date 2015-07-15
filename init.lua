@@ -51,8 +51,8 @@ fishing_setting.settings["simple_deco_fishing_pole"] = SIMPLE_DECO_FISHING_POLE
 fishing_setting.settings["bobber_view_range"] = BOBBER_VIEW_RANGE
 fishing_setting.settings["fish_chance"] = FISH_CHANCE
 fishing_setting.settings["shark_chance"] = SHARK_CHANCE
-fishing_setting.settings["treasure_chance"] = TRESOR_CHANCE
-fishing_setting.settings["treasure_enable"] = TRESOR_RANDOM_ENABLE
+fishing_setting.settings["treasure_chance"] = TREASURE_CHANCE
+fishing_setting.settings["treasure_enable"] = TREASURE_RANDOM_ENABLE
 fishing_setting.settings["escape_chance"] = ESCAPE_CHANCE
 
 -- load config file if exist in worldpath
@@ -87,10 +87,7 @@ minetest.register_globalstep(function(dtime)
 			fishing_setting.contest["warning_said"] = true
 		end
 		if fishing_setting.contest["duration"] < 0 then
-			minetest.chat_send_all(fishing_setting.func.S("End of fishing contest."))
-			minetest.sound_play("fishing_contest_end",{gain=0.8})
-			fishing_setting.contest["contest"] = false
-			fishing_setting.func.show_result()
+			fishing_setting.func.end_contest()
 		end
 	end
 end)

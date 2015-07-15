@@ -1,7 +1,4 @@
 
-
-
-
 -- baitball
 minetest.register_craftitem("fishing:baitball", {
 	description = fishing_setting.func.S("Bait Ball"),

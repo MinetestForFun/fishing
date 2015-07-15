@@ -138,7 +138,7 @@ minetest.register_craft({
 -- get worms from digging in dirt:
 if fishing_setting.settings["new_worm_source"] == false then
 	minetest.register_node(":default:dirt", {
-		description = fishing_setting.func.fishing_setting.func.S("Dirt"),
+		description = fishing_setting.func.S("Dirt"),
 		tiles = {"default_dirt.png"},
 		is_ground_content = true,
 		groups = {crumbly=3},

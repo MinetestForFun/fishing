@@ -38,7 +38,7 @@ local FISHING_BOBBER_ENTITY={
 	visual = "wielditem",
 	visual_size = {x=1/3, y=1/3, z=1/3},
 	textures = {"fishing:bobber_box"},
-	--			   {left ,bottom, front, right,  top ,  back}
+	--             {left ,bottom, front, right,  top ,  back}
 	collisionbox = {-2/16, -4/16, -2/16,  2/16, 1/16,  2/16},
 	randomtime = 50,
 	baitball = 0,
@@ -64,7 +64,7 @@ local FISHING_BOBBER_ENTITY={
 	end,
 
 
---	WHEN RIGHTCLICKING THE BOBBER THE FOLLOWING HAPPENS (CLICK AT THE RIGHT TIME WHILE HOLDING A FISHING POLE)
+-- WHEN RIGHTCLICKING THE BOBBER THE FOLLOWING HAPPENS (CLICK AT THE RIGHT TIME WHILE HOLDING A FISHING POLE)
 	on_rightclick = function (self, clicker)
 		local item = clicker:get_wielded_item()
 		local playername = clicker:get_player_name()

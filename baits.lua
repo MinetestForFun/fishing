@@ -25,4 +25,3 @@ fishing_setting.baits["fishing:fish_raw"] = { ["bait"] = "fishing:fish_raw", ["b
 
 fishing_setting.baits["fishing:clownfish_raw"] = { ["bait"] = "fishing:clownfish_raw", ["bobber"] = "fishing:bobber_shark_entity",["texture"] = "fishing_clownfish_raw.png", ["hungry"] = 50 }
 fishing_setting.baits["fishing:bluewhite_raw"] = { ["bait"] = "fishing:bluewhite_raw", ["bobber"] = "fishing:bobber_shark_entity",["texture"] = "fishing_bluewhite_raw.png", ["hungry"] = 50 }
-
