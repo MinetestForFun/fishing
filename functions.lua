@@ -1,12 +1,12 @@
 
 --function save settings 
 function fishing_setting.func.save()
-	local input = io.open(fishing_setting.file_settings, "w")
+	local input, err = io.open(fishing_setting.file_settings, "w")
 	if input then
 		input:write(minetest.serialize(fishing_setting.settings))
 		input:close()
 	else
-		minetest.log("action","Open failed (mode:w) of " .. fishing_setting.file_settings)
+		minetest.log("error", "open(" .. fishing_setting.file_settings .. ", 'w') failed: " .. err)
 	end
 end
 
@@ -43,16 +43,16 @@ function fishing_setting.func.set_settings(new_settings, settings)
 		new_settings["fish_chance"] = settings["fish_chance"]
 	end
 
-	if settings["tresor_chance"] ~= nil then
-		new_settings["tresor_chance"] = settings["tresor_chance"]
+	if settings["treasure_chance"] ~= nil then
+		new_settings["treasure_chance"] = settings["treasure_chance"]
 	end
 
 	if settings["shark_chance"] ~= nil then
 		new_settings["shark_chance"] = settings["shark_chance"]
 	end
 
-	if settings["tresor_enable"] ~= nil then
-		new_settings["tresor_enable"] = settings["tresor_enable"]
+	if settings["treasure_enable"] ~= nil then
+		new_settings["treasure_enable"] = settings["treasure_enable"]
 	end
 
 	if settings["escape_chance"] ~= nil then
@@ -107,13 +107,13 @@ function fishing_setting.func.hungry_random()
 end
 
 
--- show notification when player catch tresor
-function fishing_setting.func.notify(f_name, tresor)
-	local title = fishing_setting.func.S("Good luck to %s, He catch the tresor, %s!"):format(f_name, tresor[4])
+-- Show notification when a player catches treasure
+function fishing_setting.func.notify(f_name, treasure)
+	local title = fishing_setting.func.S("Lucky %s, he caught the treasure, %s!"):format(f_name, treasure[4])
 	for _, player in ipairs(minetest.get_connected_players()) do
 		local player_name = player:get_player_name()
 		if player_name == f_name then
-			minetest.chat_send_player(player_name, fishing_setting.func.S("You catch the tresor, %s!"):format(tresor[4]))
+			minetest.chat_send_player(player_name, fishing_setting.func.S("You caught the treasure, %s!"):format(treasure[4]))
 		else
 			minetest.chat_send_player(player_name, title)
 		end
@@ -121,117 +121,96 @@ function fishing_setting.func.notify(f_name, tresor)
 end
 
 
---Menu fishing configuration
+-- Menu: fishing configuration
 fishing_setting.func.on_show_settings = function(player_name)
-
+	local S = fishing_setting.func.S
 	if not fishing_setting.tmp_setting then
 		fishing_setting.tmp_setting = {}
 		fishing_setting.func.set_settings(fishing_setting.tmp_setting, fishing_setting.settings)
 	end
-	local formspec = "size[10.8,9]label[4,0;FISHING CONFIGURATION]"..
-				--Chance fish
-				"label[1.6,0.5;Chance fish]"..
-				"button[0,1;1,1;cfish;-1]"..
-				"button[1,1;1,1;cfish;-10]"..
-				"label[2.1,1.2;"..tostring(fishing_setting.tmp_setting["fish_chance"]).."]"..
-				"button[2.7,1;1,1;cfish;+10]"..
-				"button[3.7,1;1,1;cfish;+1]"..
-				--Chance shark
-				"label[1.5,2;Chance shark]"..
-				"button[0,2.5;1,1;cshark;-1]"..
-				"button[1,2.5;1,1;cshark;-10]"..
-				"label[2.1,2.7;"..tostring(fishing_setting.tmp_setting["shark_chance"]).."]"..
-				"button[2.7,2.5;1,1;cshark;+10]"..
-				"button[3.7,2.5;1,1;cshark;+1]"..
-				--Chance tresor
-				"label[1.5,3.5;Chance tresor]"..
-				"button[0,4.;1,1;ctresor;-1]"..
-				"button[1,4;1,1;ctresor;-10]"..
-				"label[2.1,4.2;"..tostring(fishing_setting.tmp_setting["tresor_chance"]).."]"..
-				"button[2.7,4;1,1;ctresor;+10]"..
-				"button[3.7,4;1,1;ctresor;+1]"..
-				--Chance worm
-				"label[7.5,0.5;Chance worm]"..
-				"button[6,1;1,1;cworm;-1]"..
-				"button[7,1;1,1;cworm;-10]"..
-				"label[8.1,1.2;"..tostring(fishing_setting.tmp_setting["worm_chance"]).."]"..
-				"button[8.7,1;1,1;cworm;+10]"..
-				"button[9.7,1;1,1;cworm;+1]"..
-				--Chance escape
-				"label[7.4,2;Chance escape]"..
-				"button[6,2.5;1,1;cescape;-1]"..
-				"button[7,2.5;1,1;cescape;-10]"..
-				"label[8.1,2.7;"..tostring(fishing_setting.tmp_setting["escape_chance"]).."]"..
-				"button[8.7,2.5;1,1;cescape;+10]"..
-				"button[9.7,2.5;1,1;cescape;+1]"..
-				--Bobber view range
-				"label[7.2,3.5;Bobber view range]"..
-				"button[7,4;1,1;bvrange;-1]"..
-				"label[8.1,4.2;"..tostring(fishing_setting.tmp_setting["bobber_view_range"]).."]"..
-				"button[8.7,4;1,1;bvrange;+1]"..
-				--messages display
-				"label[0,5.7;Display messages in chat]"..
-				"button[3.7,5.5;1,1;dmessages;"..tostring(fishing_setting.tmp_setting["message"]).."]"..
-				--poledeco
-				"label[0,6.5;Simple pole deco]"..
-				"button[3.7,6.3;1,1;poledeco;"..tostring(fishing_setting.tmp_setting["simple_deco_fishing_pole"]).."]"..
-				--wearout
-				"label[0,7.3;Poles Wear]"..
-				"button[3.7,7.1;1,1;wearout;"..tostring(fishing_setting.tmp_setting["wear_out"]).."]"..
-				--TRESOR_ENABLE
-				"label[6,5.7;Tresor enable]"..
-				"button[9.7,5.5;1,1;tresorenable;"..tostring(fishing_setting.tmp_setting["tresor_enable"]).."]"..
-				--NEW_WORM_SOURCE
-				"label[6,6.5;New worm source (reboot)]"..
-				"button[9.7,6.3;1,1;newworm;"..tostring(fishing_setting.tmp_setting["new_worm_source"]).."]"..
-				--WORM_IS_MOB
-				"label[6,7.3;Worm is mob (reboot)]"..
-				"button[9.7,7.1;1,1;wormmob;"..tostring(fishing_setting.tmp_setting["worm_is_mob"]).."]"..
-				"button_exit[0,8.2;1.5,1;save;Abort]"..
-				"button_exit[9.2,8.2;1.5,1;save;Ok]"
+	local formspec = "size[10.8,9]label[4,0;"..S("Fishing configuration").."]"..
+		-- Fish chance
+		"label[1.6,0.5;"..S("Fish chance").."]"..
+		"button[0,1;1,1;cfish;-1]"..
+		"button[1,1;1,1;cfish;-10]"..
+		"label[2.1,1.2;"..tostring(fishing_setting.tmp_setting["fish_chance"]).."]"..
+		"button[2.7,1;1,1;cfish;+10]"..
+		"button[3.7,1;1,1;cfish;+1]"..
+		-- Shark chance
+		"label[1.5,2;"..S("Shark chance").."]"..
+		"button[0,2.5;1,1;cshark;-1]"..
+		"button[1,2.5;1,1;cshark;-10]"..
+		"label[2.1,2.7;"..tostring(fishing_setting.tmp_setting["shark_chance"]).."]"..
+		"button[2.7,2.5;1,1;cshark;+10]"..
+		"button[3.7,2.5;1,1;cshark;+1]"..
+		-- Treasure chance
+		"label[1.5,3.5;"..S("Treasure chance").."]"..
+		"button[0,4.;1,1;ctreasure;-1]"..
+		"button[1,4;1,1;ctreasure;-10]"..
+		"label[2.1,4.2;"..tostring(fishing_setting.tmp_setting["treasure_chance"]).."]"..
+		"button[2.7,4;1,1;ctreasure;+10]"..
+		"button[3.7,4;1,1;ctreasure;+1]"..
+		-- Worm chance
+		"label[7.5,0.5;"..S("Worm chance").."]"..
+		"button[6,1;1,1;cworm;-1]"..
+		"button[7,1;1,1;cworm;-10]"..
+		"label[8.1,1.2;"..tostring(fishing_setting.tmp_setting["worm_chance"]).."]"..
+		"button[8.7,1;1,1;cworm;+10]"..
+		"button[9.7,1;1,1;cworm;+1]"..
+		-- Escape chance
+		"label[7.4,2;"..S("Escape chance").."]"..
+		"button[6,2.5;1,1;cescape;-1]"..
+		"button[7,2.5;1,1;cescape;-10]"..
+		"label[8.1,2.7;"..tostring(fishing_setting.tmp_setting["escape_chance"]).."]"..
+		"button[8.7,2.5;1,1;cescape;+10]"..
+		"button[9.7,2.5;1,1;cescape;+1]"..
+		-- Bobber view range
+		"label[7.2,3.5;"..S("Bobber view range").."]"..
+		"button[7,4;1,1;bvrange;-1]"..
+		"label[8.1,4.2;"..tostring(fishing_setting.tmp_setting["bobber_view_range"]).."]"..
+		"button[8.7,4;1,1;bvrange;+1]"..
+		-- Messages display
+		"label[0,5.7;"..S("Display messages in chat").."]"..
+		"button[3.7,5.5;1,1;dmessages;"..tostring(fishing_setting.tmp_setting["message"]).."]"..
+		--poledeco
+		"label[0,6.5;"..S("Simple pole deco").."]"..
+		"button[3.7,6.3;1,1;poledeco;"..tostring(fishing_setting.tmp_setting["simple_deco_fishing_pole"]).."]"..
+		-- Wearout
+		"label[0,7.3;"..S("Poles wearout").."]"..
+		"button[3.7,7.1;1,1;wearout;"..tostring(fishing_setting.tmp_setting["wear_out"]).."]"..
+		-- TREASURE_ENABLE
+		"label[6,5.7;"..S("Enable treasure").."]"..
+		"button[9.7,5.5;1,1;treasureenable;"..tostring(fishing_setting.tmp_setting["treasure_enable"]).."]"..
+		-- NEW_WORM_SOURCE
+		"label[6,6.5;"..S("New worm source (reboot)").."]"..
+		"button[9.7,6.3;1,1;newworm;"..tostring(fishing_setting.tmp_setting["new_worm_source"]).."]"..
+		-- WORM_IS_MOB
+		"label[6,7.3;"..S("Worm is a mob (reboot)").."]"..
+		"button[9.7,7.1;1,1;wormmob;"..tostring(fishing_setting.tmp_setting["worm_is_mob"]).."]"..
+		"button_exit[0,8.2;1.5,1;save;"..S("Abort").."]"..
+		"button_exit[9.2,8.2;1.5,1;save;"..S("OK").."]"
 	minetest.show_formspec(player_name, "fishing:settings", formspec)
 end
 
 local inc = function(value, field, min, max)
-	local v
-	if field == "+1" then
-		v = value + 1
-	elseif field == "+10" then
-		v = value + 10
-	elseif field == "+60" then
-		v = value + 60
-	elseif field == "+600" then
-		v = value + 600
-	elseif field == "-1" then
-		v = value - 1
-	elseif field == "-10" then
-		v = value - 10
-	elseif field == "-60" then
-		v = value - 60
-	elseif field == "-600" then
-		v = value - 600
-	else -- useless, prevent crash
-		return value
+	local inc = tonumber(field)
+	local v = value
+	if inc ~= nil then
+		v = value + inc
 	end
 
 	if v > max then
-		v = max
+		return max
 	end
 	if v < min then
-		v = min
+		return min
 	end
 	return v
 end
 
 
 local bool = function(field)
-	local v
-	if field == "true" then
-		v = false
-	else 
-		v = true
-	end
-	return v
+	return field ~= "true"
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
@@ -250,8 +229,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			fishing_setting.tmp_setting["fish_chance"] = inc(fishing_setting.tmp_setting["fish_chance"], fields["cfish"], 1, 100)
 		elseif fields["cshark"] then
 			fishing_setting.tmp_setting["shark_chance"] = inc(fishing_setting.tmp_setting["shark_chance"], fields["cshark"], 1, 100)
-		elseif fields["ctresor"] then
-			fishing_setting.tmp_setting["tresor_chance"] = inc(fishing_setting.tmp_setting["tresor_chance"], fields["ctresor"], 1, 100)
+		elseif fields["ctreasure"] then
+			fishing_setting.tmp_setting["treasure_chance"] = inc(fishing_setting.tmp_setting["treasure_chance"], fields["ctreasure"], 1, 100)
 		elseif fields["bvrange"] then
 			fishing_setting.tmp_setting["bobber_view_range"] = inc(fishing_setting.tmp_setting["bobber_view_range"], fields["bvrange"], 4, 20)
 		elseif fields["cworm"] then
@@ -264,8 +243,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			fishing_setting.tmp_setting["simple_deco_fishing_pole"] = bool(fields["poledeco"])
 		elseif fields["wearout"] then
 			fishing_setting.tmp_setting["wear_out"] = bool(fields["wearout"])
-		elseif fields["tresorenable"] then
-			fishing_setting.tmp_setting["tresor_enable"] = bool(fields["tresorenable"])
+		elseif fields["treasureenable"] then
+			fishing_setting.tmp_setting["treasure_enable"] = bool(fields["treasureenable"])
 		elseif fields["newworm"] then
 			fishing_setting.tmp_setting["new_worm_source"] = bool(fields["newworm"])
 		elseif fields["wormmob"] then
@@ -279,8 +258,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		if fields["classement"] then
 			local formspec = fishing_setting.func.get_stat()
 			minetest.show_formspec(player_name, "fishing:classement", formspec)
-		elseif fields["concours"] then
-			fishing_setting.func.on_show_settings_concours(player_name)
+		elseif fields["contest"] then
+			fishing_setting.func.on_show_settings_contest(player_name)
 		elseif fields["configuration"] then
 			fishing_setting.func.on_show_settings(player_name)
 		end
@@ -313,7 +292,7 @@ end
 minetest.register_on_shutdown(function()
 	minetest.log("action", "[fishing] Server shuts down. saving trophies table")
 	fishing_setting.func.save_trophies()
-	fishing_setting.func.save_concours()
+	fishing_setting.func.save_contest()
 end)
 
 
@@ -338,8 +317,8 @@ end
 
 minetest.register_on_joinplayer(function(player)
 	local player_name = player:get_player_name()
-	if fishing_setting.concours["concours"] == true then
-		minetest.chat_send_player(player_name, fishing_setting.func.S("A fishing contest is in progress. (remaining time %s)"):format(fishing_setting.func.timetostr(fishing_setting.concours["duration"])))
+	if fishing_setting.contest["contest"] == true then
+		minetest.chat_send_player(player_name, fishing_setting.func.S("A fishing contest is in progress. (remaining time %s)"):format(fishing_setting.func.timetostr(fishing_setting.contest["duration"])))
 	end
 end)
 
@@ -353,7 +332,7 @@ function fishing_setting.func.add_to_trophies(player, fish, desc)
 		end
 		fishing_setting.trophies[fish][player_name] = (fishing_setting.trophies[fish][player_name] or 0) + 1
 		if fishing_setting.trophies[fish][player_name]%100 == 0 then
-			minetest.chat_send_player(player_name, fishing_setting.func.S("You win a new trophie, you have catched %s " .. fish.."."):format(fishing_setting.trophies[fish][player_name]))
+			minetest.chat_send_player(player_name, fishing_setting.func.S("You win a new trophy, you have caught %s " .. fish.."."):format(fishing_setting.trophies[fish][player_name]))
 			local inv = player:get_inventory()
 			local name = "fishing:trophy_"..fish
 			if inv:room_for_item("main", {name=name, count=1, wear=0, metadata=""}) then
@@ -363,24 +342,25 @@ function fishing_setting.func.add_to_trophies(player, fish, desc)
 			end
 		end
 		
-		if fishing_setting.concours["concours"] ~= nil and fishing_setting.concours["concours"] == true then
-			if fishing_setting.concours[fish] == nil then
-				fishing_setting.concours[fish] = {}
+		if fishing_setting.contest["contest"] ~= nil and fishing_setting.contest["contest"] == true then
+			if fishing_setting.contest[fish] == nil then
+				fishing_setting.contest[fish] = {}
 			end
-			fishing_setting.concours[fish][player_name] = (fishing_setting.concours[fish][player_name] or 0) + 1
-			minetest.chat_send_all(fishing_setting.func.S("Yeah, %s catch "..desc):format(player_name))
+			fishing_setting.contest[fish][player_name] = (fishing_setting.contest[fish][player_name] or 0) + 1
+			minetest.chat_send_all(fishing_setting.func.S("Yeah, %s caught "..desc):format(player_name))
 		end
 	end
 end
 
 
---Menu fishing configuration
+-- Menu: fishing configuration/contest
 fishing_setting.func.on_show_admin_menu = function(player_name)
-	local formspec = "size[5,5]label[1.6,0;FISHING MENU]"..
-					"button[1,0.5;3,1;classement;Classement concours]"..
-					"button[1,1.5;3,1;concours;Concours]"..
-					"button[1,2.5;3,1;configuration;Configuration]"..
-					"button_exit[1,4.5;3,1;close;Close]"
+	local S = fishing_setting.func.S
+	local formspec = "size[5,5]label[1.6,0;"..S("Fishing Menu").."]"..
+					"button[0.5,0.5;4,1;classement;"..S("Contest rankings").."]"..
+					"button[0.5,1.5;4,1;contest;"..S("Contests").."]"..
+					"button[0.5,2.5;4,1;configuration;"..S("Configuration").."]"..
+					"button_exit[1,4.5;3,1;close;"..S("Close").."]"
 	minetest.show_formspec(player_name, "fishing:admin_conf", formspec)
 end
 
@@ -406,48 +386,48 @@ end
 
 
 --function save settings 
-function fishing_setting.func.save_concours()
-	local input = io.open(fishing_setting.file_concours, "w")
+function fishing_setting.func.save_contest()
+	local input = io.open(fishing_setting.file_contest, "w")
 	if input then
-		input:write(minetest.serialize(fishing_setting.concours))
+		input:write(minetest.serialize(fishing_setting.contest))
 		input:close()
 	else
-		minetest.log("action","Open failed (mode:w) of " .. fishing_setting.file_concours)
+		minetest.log("action","Open failed (mode:w) of " .. fishing_setting.file_contest)
 	end
 end
 
 --function load councours data from file 
-function fishing_setting.func.load_concours()
-	local file = io.open(fishing_setting.file_concours, "r")
+function fishing_setting.func.load_contest()
+	local file = io.open(fishing_setting.file_contest, "r")
 	local settings = {}
-	fishing_setting.concours = {["concours"] = false, ["duration"] = 3600, ["bobber_nb"] = 4}
+	fishing_setting.contest = {["contest"] = false, ["duration"] = 3600, ["bobber_nb"] = 4}
 	if file then
 		 settings = minetest.deserialize(file:read("*all"))
 		file:close()
 		if settings ~= nil and type(settings) == "table" then
-			if settings["concours"] ~= nil then
-				fishing_setting.concours["concours"] = settings["concours"]
+			if settings["contest"] ~= nil then
+				fishing_setting.contest["contest"] = settings["contest"]
 			end
 			if settings["duration"] ~= nil then
-				fishing_setting.concours["duration"] = settings["duration"]
+				fishing_setting.contest["duration"] = settings["duration"]
 			end
 			if settings["bobber_nb"] ~= nil then
-				fishing_setting.concours["bobber_nb"] = settings["bobber_nb"]
+				fishing_setting.contest["bobber_nb"] = settings["bobber_nb"]
 			end
 			if settings["fish_raw"] ~= nil then
-				fishing_setting.concours["fish_raw"] = settings["fish_raw"]
+				fishing_setting.contest["fish_raw"] = settings["fish_raw"]
 			end
 			if settings["clownfish_raw"] ~= nil then
-				fishing_setting.concours["clownfish_raw"] = settings["clownfish_raw"]
+				fishing_setting.contest["clownfish_raw"] = settings["clownfish_raw"]
 			end
 			if settings["bluewhite_raw"] ~= nil then
-				fishing_setting.concours["bluewhite_raw"] = settings["bluewhite_raw"]
+				fishing_setting.contest["bluewhite_raw"] = settings["bluewhite_raw"]
 			end
 			if settings["shark_raw"] ~= nil then
-				fishing_setting.concours["shark_raw"] = settings["shark_raw"]
+				fishing_setting.contest["shark_raw"] = settings["shark_raw"]
 			end
 			if settings["pike_raw"] ~= nil then
-				fishing_setting.concours["pike_raw"] = settings["pike_raw"]
+				fishing_setting.contest["pike_raw"] = settings["pike_raw"]
 			end
 		end
 	end
@@ -455,66 +435,67 @@ end
 
 
 --Menu fishing configuration
-fishing_setting.func.on_show_settings_concours = function(player_name)
+fishing_setting.func.on_show_settings_contest = function(player_name)
+	local S = fishing_setting.func.S
 	if not fishing_setting.tmp_setting then
-		fishing_setting.tmp_setting = { ["concours"] = (fishing_setting.concours["concours"] or false),
-										["duration"] = (math.floor(fishing_setting.concours["duration"]) or 3600),
-										["bobber_nb"] = (fishing_setting.concours["bobber_nb"] or 2),
+		fishing_setting.tmp_setting = { ["contest"] = (fishing_setting.contest["contest"] or false),
+										["duration"] = (math.floor(fishing_setting.contest["duration"]) or 3600),
+										["bobber_nb"] = (fishing_setting.contest["bobber_nb"] or 2),
 										["reset"] = ""
 										}
 	end
-	local formspec = "size[6.1,7]label[1.9,0;FISHING CONCOURS]"..
-				--Time concours
-				"label[2.2,0.5;Duration(in sec)]"..
+	local formspec = "size[6.1,7]label[1.9,0;"..S("Fishing contest").."]"..
+				--Time contest
+				"label[2.2,0.5;"..S("Duration(in sec)").."]"..
 				"button[0.8,1;1,1;duration;-60]"..
 				"button[1.8,1;1,1;duration;-600]"..
 				"label[2.7,1.2;"..tostring(fishing_setting.tmp_setting["duration"]).."]"..
 				"button[3.5,1;1,1;duration;+600]"..
 				"button[4.5,1;1,1;duration;+60]"..
 				--bobber nb
-				"label[2,2;Bobber number limit]"..
+				"label[2,2;"..S("Bobber number limit").."]"..
 				"button[1.8,2.5;1,1;bobbernb;-1]"..
 				"label[2.9,2.7;"..tostring(fishing_setting.tmp_setting["bobber_nb"]).."]"..
 				"button[3.5,2.5;1,1;bobbernb;+1]"..
-				--concours enable
-				"label[0.8,3.8;concours enable]"..
-				"button[4.5,3.6;1,1;concours;"..tostring(fishing_setting.tmp_setting["concours"]).."]"..
+				--contest enable
+				"label[0.8,3.8;"..S("Enable contests").."]"..
+				"button[4.5,3.6;1,1;contest;"..tostring(fishing_setting.tmp_setting["contest"]).."]"..
 				--reset
-				"label[0.8,5.2;reset classements (type 'yes')]"..
+				"label[0.8,5.2;"..S("Reset rankings (type 'yes')").."]"..
 				"field[4.8,5.4;1,1;reset;;]"..
-				"button_exit[0.8,6.2;1.5,1;save;Abort]"..
-				"button_exit[4,6.2;1.5,1;save;Ok]"
-	minetest.show_formspec(player_name, "fishing:concours", formspec)
+				"button_exit[0.8,6.2;1.5,1;save;"..S("Abort").."]"..
+				"button_exit[4,6.2;1.5,1;save;"..S("OK").."]"
+	minetest.show_formspec(player_name, "fishing:contest", formspec)
 end
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
-	if formname == "fishing:concours" then
+	if formname == "fishing:contest" then
 		local name = player:get_player_name()
 		if not name then return end
 		if fields["save"] == "Ok" then
 			if fields["reset"] and fields["reset"]:lower() == "yes" then
-				fishing_setting.concours["fish_raw"] = {}
-				fishing_setting.concours["clownfish_raw"] = {}
-				fishing_setting.concours["bluewhite_raw"] = {}
-				fishing_setting.concours["shark_raw"] = {}
-				fishing_setting.concours["pike_raw"] = {}
+				fishing_setting.contest["fish_raw"] = {}
+				fishing_setting.contest["clownfish_raw"] = {}
+				fishing_setting.contest["bluewhite_raw"] = {}
+				fishing_setting.contest["shark_raw"] = {}
+				fishing_setting.contest["pike_raw"] = {}
 			end
 			
-			local progress = (fishing_setting.concours["concours"] or false)
-			fishing_setting.concours["duration"] = fishing_setting.tmp_setting["duration"]
-			fishing_setting.concours["concours"] = fishing_setting.tmp_setting["concours"]
-			fishing_setting.concours["bobber_nb"] = fishing_setting.tmp_setting["bobber_nb"]
-			if progress == false and fishing_setting.tmp_setting["concours"] == true then
-				fishing_setting.concours["concours"] = true
-				fishing_setting.concours["warning_said"] = false
-				local time = fishing_setting.func.timetostr(fishing_setting.concours["duration"])
+			local progress = (fishing_setting.contest["contest"] or false)
+			fishing_setting.contest["duration"] = fishing_setting.tmp_setting["duration"]
+			fishing_setting.contest["contest"] = fishing_setting.tmp_setting["contest"]
+			fishing_setting.contest["bobber_nb"] = fishing_setting.tmp_setting["bobber_nb"]
+			if progress == false and fishing_setting.tmp_setting["contest"] == true then
+				fishing_setting.contest["contest"] = true
+				fishing_setting.contest["warning_said"] = false
+				local time = fishing_setting.func.timetostr(fishing_setting.contest["duration"])
 				minetest.chat_send_all(fishing_setting.func.S("Attention, Fishing contest start (duration %s)!!!"):format(time))
 				minetest.sound_play("fishing_contest_start",{gain=0.8})
 				
-			elseif progress == true and fishing_setting.tmp_setting["concours"] == false then
-				fishing_setting.concours["concours"] = false
+			elseif progress == true and fishing_setting.tmp_setting["contest"] == false then
+				fishing_setting.contest["contest"] = false
 			end
-			fishing_setting.func.save_concours()
+			fishing_setting.func.save_contest()
 			fishing_setting.tmp_setting = nil
 			return
 		elseif fields["quit"] or fields["abort"] then
@@ -522,14 +503,14 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			return
 		elseif fields["duration"] then
 			fishing_setting.tmp_setting["duration"] = inc(fishing_setting.tmp_setting["duration"], fields["duration"], 120, 14400)
-		elseif fields["concours"] then
-			fishing_setting.tmp_setting["concours"] = bool(fields["concours"])
+		elseif fields["contest"] then
+			fishing_setting.tmp_setting["contest"] = bool(fields["contest"])
 		elseif fields["bobbernb"] then
 			fishing_setting.tmp_setting["bobber_nb"] = inc(fishing_setting.tmp_setting["bobber_nb"], fields["bobbernb"], 1, 8)
 		else
 			return
 		end
-		fishing_setting.func.on_show_settings_concours(name)
+		fishing_setting.func.on_show_settings_contest(name)
 	end
 end)
 
@@ -572,16 +553,17 @@ end
 
 function fishing_setting.func.get_stat()
 	local winners= {}
-	for k,v in pairs(fishing_setting.concours) do
+	for k,v in pairs(fishing_setting.contest) do
 		if string.find(k, "_raw") ~= nil then
-			if fishing_setting.concours[k] ~= nil then
-				winners[k] = fishing_setting.func.set_winners(fishing_setting.concours[k])
+			if fishing_setting.contest[k] ~= nil then
+				winners[k] = fishing_setting.func.set_winners(fishing_setting.contest[k])
 			else
 				winners[k] = {}
 			end
 		end
 	end
-	local formspec = {"size[12,8]label[3.7,0;FISHING CONCOURS CLASSEMENT]"}
+	local S = fishing_setting.func.S
+	local formspec = {"size[12,8]label[3.7,0;"..S("Fishing contest rankings").."]"}
 	local X = 0
 	local Y
 	for fish, fishers in pairs(winners) do
@@ -589,14 +571,14 @@ function fishing_setting.func.get_stat()
 		table.insert(formspec, "label["..(X+0.4)..",0.5;"..string.gsub(fish, "_raw", ""):upper().."]") --fish name
 		for _,s in ipairs(fishers) do
 			for pl,nb in pairs(s) do
-				table.insert(formspec, "label["..(X) ..","..Y..";"..tostring(nb).."]") -- nb fish catched
+				table.insert(formspec, "label["..(X) ..","..Y..";"..tostring(nb).."]") -- nb fish caught
 				table.insert(formspec, "label["..(X+0.5) ..","..Y..";"..tostring(pl).."]") -- playername
 			end
 			Y = Y + 0.4
 		end
 		X = X + 2.3
 	end
-	table.insert(formspec, "button_exit[5.5,7.5;1.2,1;close;CLose]")
+	table.insert(formspec, "button_exit[5.5,7.5;1.2,1;close;"..S("Close").."]")
 	return table.concat(formspec)
 end
 

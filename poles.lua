@@ -35,8 +35,8 @@ local bobbermax = pole["bobber_max"]
 				--if contest then player must have only 2 boober
 				local bobber_nb = 0
 				local bobber_max
-				if fishing_setting.concours["concours"] ~= nil and fishing_setting.concours["concours"] == true then 
-					bobber_max = fishing_setting.concours["bobber_nb"]
+				if fishing_setting.contest["contest"] ~= nil and fishing_setting.contest["contest"] == true then 
+					bobber_max = fishing_setting.contest["bobber_nb"]
 				else
 					bobber_max = bobbermax
 				end
