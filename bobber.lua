@@ -24,7 +24,7 @@ minetest.register_node("fishing:bobber_box", {
 		"fishing_bobber.png",
 		"fishing_bobber.png",
 		"fishing_bobber.png^[transformFX"
-	}, -- 
+	},
 	groups = {not_in_creative_inventory=1},
 })
 
@@ -144,11 +144,11 @@ local FISHING_BOBBER_ENTITY={
 			-- if fish or others items, move bobber to simulate fish on the line
 			if self.prize ~= "" and math.random(1,3) == 1 then
 				if self.old_pos2 == true then
-					pos.y = pos.y-0.0325
+					pos.y = pos.y-0.0280
 					self.object:moveto(pos, false)
 					self.old_pos2 = false
 				else
-					pos.y = pos.y+0.0325
+					pos.y = pos.y+0.0280
 					self.object:moveto(pos, false)
 					self.old_pos2 = true
 				end
@@ -172,7 +172,7 @@ local FISHING_BOBBER_ENTITY={
 			self.prize = fishing_setting.prizes["fish"][math.random(1,#fishing_setting.prizes["fish"])]
 		else
 			if math.random(1, 100) <= 10 then
-				self.prize = fishing_setting.prizes["plants"][math.random(1,#fishing_setting.prizes["plants"])]
+				self.prize = fishing_setting.func.get_loot()
 			end
 		end
 
