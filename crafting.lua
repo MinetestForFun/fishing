@@ -91,6 +91,7 @@ minetest.register_craft({
 	recipe = "fishing:clownfish_raw",
 	cooktime = 2,
 })
+
 minetest.register_craft({
 	type = "cooking",
 	output = "fishing:fish_cooked",
@@ -98,6 +99,33 @@ minetest.register_craft({
 	cooktime = 2,
 })
 
+minetest.register_craft({
+	type = "cooking",
+	output = "fishing:fish_cooked",
+	recipe = "fishing:exoticfish_raw",
+	cooktime = 2,
+})
+
+minetest.register_craft({
+	type = "cooking",
+	output = "fishing:fish_cooked",
+	recipe = "fishing:carp_raw",
+	cooktime = 2,
+})
+
+minetest.register_craft({
+	type = "cooking",
+	output = "fishing:fish_cooked",
+	recipe = "fishing:perch_raw",
+	cooktime = 2,
+})
+
+minetest.register_craft({
+	type = "cooking",
+	output = "fishing:fish_cooked",
+	recipe = "fishing:catfish_raw",
+	cooktime = 2,
+})
 
 -----------------------------------------------------------------------------------------------
 -- Wheat Seed

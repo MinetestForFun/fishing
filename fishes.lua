@@ -51,6 +51,46 @@ minetest.register_craftitem("fishing:bluewhite_raw", {
 	inventory_image = "fishing_bluewhite_raw.png",
 	 on_use = minetest.item_eat(2),
 })
+-----------------------------------------------------------------------------------------------
+-- exoticfish
+-----------------------------------------------------------------------------------------------
+minetest.register_craftitem("fishing:exoticfish_raw", {
+	description = fishing_setting.func.S("Exotic"),
+	groups = {},
+	inventory_image = "fishing_exoticfish_raw.png",
+	 on_use = minetest.item_eat(2),
+})
+
+-----------------------------------------------------------------------------------------------
+-- carp
+-----------------------------------------------------------------------------------------------
+minetest.register_craftitem("fishing:carp_raw", {
+	description = fishing_setting.func.S("Carp"),
+	groups = {},
+	inventory_image = "fishing_carp_raw.png",
+	 on_use = minetest.item_eat(2),
+})
+
+-----------------------------------------------------------------------------------------------
+-- perch
+-----------------------------------------------------------------------------------------------
+minetest.register_craftitem("fishing:perch_raw", {
+	description = fishing_setting.func.S("Perch"),
+	groups = {},
+	inventory_image = "fishing_perch_raw.png",
+	 on_use = minetest.item_eat(2),
+})
+
+-----------------------------------------------------------------------------------------------
+-- catfish
+-----------------------------------------------------------------------------------------------
+minetest.register_craftitem("fishing:catfish_raw", {
+	description = fishing_setting.func.S("Catfish"),
+	groups = {},
+	inventory_image = "fishing_catfish_raw.png",
+	 on_use = minetest.item_eat(2),
+})
+
 
 -----------------------------------------------------------------------------------------------
 -- Whatthef... it's a freakin' Shark!

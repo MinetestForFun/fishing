@@ -1,15 +1,28 @@
 
-
-fishing_setting.prizes["fish"] = {
-	{"fishing",  				"fish_raw",			0,			"a Fish."},
-	{"fishing",  				"clownfish_raw",			0,			"a Clownfish."},
-	{"fishing",  				"bluewhite_raw",			0,			"a Bluewhite."}
+fishing_setting.prizes["rivers"] = {}
+fishing_setting.prizes["rivers"]["little"] = {
+	{"fishing",  				"fish_raw",				0,			"a Fish."},
+	{"fishing",  				"carp_raw",				0,			"a Carp."},
 }
 
-fishing_setting.prizes["shark"] = {
+fishing_setting.prizes["rivers"]["big"] = {
+	{"fishing",  				"pike_raw",				0,			"a Northern Pike."},
+	{"fishing",  				"perch_raw",			0,			"a Perch."},
+	{"fishing",  				"catfish_raw",			0,			"a Catfish."},
+}
+
+
+fishing_setting.prizes["sea"] = {}
+fishing_setting.prizes["sea"]["little"] = {
+	{"fishing",  				"clownfish_raw",		0,			"a Clownfish."},
+	{"fishing",  				"bluewhite_raw",		0,			"a Bluewhite."},
+	{"fishing",  				"exoticfish_raw",		0,			"a Exoticfish."},
+}
+
+fishing_setting.prizes["sea"]["big"] = {
 	{"fishing",  				"shark_raw",			0,			"a small Shark."},
-	{"fishing",  				"pike_raw",				0,			"a Northern Pike."}
 }
+
 
 
 local stuff = {

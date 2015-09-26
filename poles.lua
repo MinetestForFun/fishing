@@ -82,6 +82,12 @@ for _,pole in pairs(fishing_setting.poles) do
 				local ent = minetest.add_entity({interval = 1,x=new_pos.x, y=new_pos.y, z=new_pos.z}, fishing_setting.baits[bait].bobber)
 				if not ent then return nil end
 				local luaentity = ent:get_luaentity()
+				local node = minetest.get_node_or_nil(pt.under)
+				if node and node.name == "default:river_water_source" then
+					luaentity.water_type = "rivers"
+				else
+					luaentity.water_type = "sea"
+				end				
 				luaentity.owner = player_name
 				luaentity.bait = bait
 				luaentity.old_pos = new_pos

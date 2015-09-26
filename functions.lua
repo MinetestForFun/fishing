@@ -344,7 +344,7 @@ end)
 function fishing_setting.func.add_to_trophies(player, fish, desc)
 	local player_name = player:get_player_name()
 	if not player_name then return end
-	if fish == "fish_raw" or fish == "shark_raw" or fish == "pike_raw" or fish == "clownfish_raw" or fish == "bluewhite_raw" then
+	if string.find(fish, "_raw") ~= nil then
 		if fishing_setting.trophies[fish] == nil then
 			fishing_setting.trophies[fish] = {}
 		end
@@ -361,10 +361,10 @@ function fishing_setting.func.add_to_trophies(player, fish, desc)
 		end
 
 		if fishing_setting.contest["contest"] ~= nil and fishing_setting.contest["contest"] == true then
-			if fishing_setting.contest[fish] == nil then
-				fishing_setting.contest[fish] = {}
+			if fishing_setting.contest["nb_fish"] == nil then
+				fishing_setting.contest["nb_fish"] = {}
 			end
-			fishing_setting.contest[fish][player_name] = (fishing_setting.contest[fish][player_name] or 0) + 1
+			fishing_setting.contest["nb_fish"][player_name] = (fishing_setting.contest["nb_fish"][player_name] or 0) + 1
 			minetest.chat_send_all(S("Yeah, %s caught "..desc):format(player_name))
 		end
 	end
@@ -413,13 +413,13 @@ function fishing_setting.func.save_contest()
 	end
 end
 
---function load councours data from file
+--function load contest data from file
 function fishing_setting.func.load_contest()
 	local file = io.open(fishing_setting.file_contest, "r")
-	local settings = {}
+	local settings
 	fishing_setting.contest = {["contest"] = false, ["duration"] = 3600, ["bobber_nb"] = 4}
 	if file then
-		 settings = minetest.deserialize(file:read("*all"))
+		settings = minetest.deserialize(file:read("*all"))
 		file:close()
 		if settings ~= nil and type(settings) == "table" then
 			if settings["contest"] ~= nil then
@@ -431,20 +431,8 @@ function fishing_setting.func.load_contest()
 			if settings["bobber_nb"] ~= nil then
 				fishing_setting.contest["bobber_nb"] = settings["bobber_nb"]
 			end
-			if settings["fish_raw"] ~= nil then
-				fishing_setting.contest["fish_raw"] = settings["fish_raw"]
-			end
-			if settings["clownfish_raw"] ~= nil then
-				fishing_setting.contest["clownfish_raw"] = settings["clownfish_raw"]
-			end
-			if settings["bluewhite_raw"] ~= nil then
-				fishing_setting.contest["bluewhite_raw"] = settings["bluewhite_raw"]
-			end
-			if settings["shark_raw"] ~= nil then
-				fishing_setting.contest["shark_raw"] = settings["shark_raw"]
-			end
-			if settings["pike_raw"] ~= nil then
-				fishing_setting.contest["pike_raw"] = settings["pike_raw"]
+			if settings["nb_fish"] ~= nil then
+				fishing_setting.contest["nb_fish"] = settings["nb_fish"]
 			end
 		end
 	end
@@ -496,11 +484,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		if not name then return end
 		if fields["save"] then
 			if fishing_setting.tmp_setting["reset"] == true then
-				fishing_setting.contest["fish_raw"] = {}
-				fishing_setting.contest["clownfish_raw"] = {}
-				fishing_setting.contest["bluewhite_raw"] = {}
-				fishing_setting.contest["shark_raw"] = {}
-				fishing_setting.contest["pike_raw"] = {}
+				fishing_setting.contest["nb_fish"] = {}
 			end
 
 			local progress = (fishing_setting.contest["contest"] or false)
@@ -562,11 +546,10 @@ end
 
 function fishing_setting.func.set_winners(list)
 	local win = {}
-	local i = 1
 	-- this uses an custom sorting function ordering by score descending
 	for k,v in spairs(list, function(t,a,b) return t[b] < t[a] end) do
-		table.insert(win, {[k]=v})
-		if #win >= 6 then
+		table.insert(win, {["name"]=k, ["nb"]=v})
+		if #win >= 15 then
 			break
 		end
 	end
@@ -575,44 +558,34 @@ end
 
 
 function fishing_setting.func.get_stat()
-	local winners= {}
-	for k,v in pairs(fishing_setting.contest) do
-		if string.find(k, "_raw") ~= nil then
-			if fishing_setting.contest[k] ~= nil then
-				winners[k] = fishing_setting.func.set_winners(fishing_setting.contest[k])
-			else
-				winners[k] = {}
-			end
-		end
+	local winners = {}
+	if fishing_setting.contest["nb_fish"] ~= nil then
+		winners = fishing_setting.func.set_winners(fishing_setting.contest["nb_fish"])
 	end
-	local formspec = {"size[12,8]label[4.6,0;"..S("Fishing contest rankings").."]"}
-	local X = 0
-	local Y
-	for fish, fishers in pairs(winners) do
-		Y = 1.1
-		table.insert(formspec, "label["..(X+0.4)..",0.5;"..string.gsub(fish, "_raw", ""):upper().."]") --fish name
-		for _,s in ipairs(fishers) do
-			for pl,nb in pairs(s) do
-				table.insert(formspec, "label["..(X) ..","..Y..";"..tostring(nb).."]") -- nb fish caught
-				table.insert(formspec, "label["..(X+0.5) ..","..Y..";"..tostring(pl).."]") -- playername
-			end
-			Y = Y + 0.4
-		end
-		X = X + 2.3
+	local formspec = {"size[6,8]label[2,0;"..S("Fishing contest rankings").."]"}
+	local Y = 1.1
+	table.insert(formspec, "label[0.5,0.5;No]")
+	table.insert(formspec, "label[2,0.5;Name]")
+	table.insert(formspec, "label[4.2,0.5;Fish Total]")
+	for num,n in ipairs(winners) do
+		table.insert(formspec, "label[0.5,"..Y..";"..tostring(num).."]") -- classement
+		table.insert(formspec, "label[2,"..Y..";"..n["name"].."]") -- playername
+		table.insert(formspec, "label[4.3,"..Y..";"..tostring(n["nb"]).."]") -- nb fish caught
+		Y = Y + 0.4
 	end
-	table.insert(formspec, "button_exit[5.4,7.5;1.2,1;close;"..S("Close").."]")
+	table.insert(formspec, "button_exit[2.4,7.5;1.2,1;close;"..S("Close").."]")
 	return table.concat(formspec)
 end
 
 function fishing_setting.func.get_hunger_info(player_name)
-	local formspec = "size[6,8]label[1.9,0;Fishing Info Center]"
-	local y = 1
+	local formspec = "size[6,9]label[1.9,0;Fishing Info Center]"
+	local y = 0.8
 	for i, a in pairs(fishing_setting.baits) do
-	formspec = formspec .."item_image_button[1,"..tostring(y)..";1,1;"..tostring(i)..";"..tostring(i)..";]"..
-		"label[2.2,"..tostring(y+0.2)..";Chance to fish :"..tostring(a["hungry"]).."%]"
+		formspec = formspec .."item_image_button[1,"..tostring(y)..";1,1;"..tostring(i)..";"..tostring(i)..";]"..
+			"label[2.2,"..tostring(y+0.2)..";Chance to fish :"..tostring(a["hungry"]).."%]"
 		y = y+1
 	end
-	formspec = formspec .."button_exit[2,7.5;2,1;close;"..S("Close").."]"
+	formspec = formspec .."button_exit[2,8.5;2,1;close;"..S("Close").."]"
 	minetest.show_formspec(player_name,"fishing:material_info", formspec)
 end
 

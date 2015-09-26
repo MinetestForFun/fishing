@@ -9,11 +9,15 @@
 
 local trophy = {
 --	  mod						 item				 name				icon
-    {"fishing",  				"fish_raw",				"Fish",				"fishing_fish_raw.png"},
-	{"fishing",  				"pike_raw",				"Northern Pike",	"fishing_pike_raw.png"},
-	{"fishing",  				"shark_raw",			"Shark",			"fishing_shark_raw.png"},
-	{"fishing",		            "clownfish_raw",		"Clownfish",		"fishing_clownfish_raw.png"},
-	{"fishing",	                "bluewhite_raw",	        "Bluewhite",	        "fishing_bluewhite_raw.png"},
+    {"fishing",     "fish_raw",            "Fish",              "fishing_fish_raw.png"},
+	{"fishing",     "carp_raw",            "Carp",	            "fishing_carp_raw.png"},
+	{"fishing",     "perch_raw",           "Perch",             "fishing_perch_raw.png"},
+	{"fishing",     "catfish_raw",         "Catfish",           "fishing_catfish_raw.png"},
+	{"fishing",     "pike_raw",            "Northern Pike",     "fishing_pike_raw.png"},
+	{"fishing",     "clownfish_raw",       "Clownfish",         "fishing_clownfish_raw.png"},
+	{"fishing",	    "bluewhite_raw",       "Bluewhite",         "fishing_bluewhite_raw.png"},
+	{"fishing",	    "exoticfish_raw",      "Exoticfish",         "fishing_exoticfish_raw.png"},
+	{"fishing",     "shark_raw",           "Shark",	            "fishing_shark_raw.png"},
 }
 
 local function has_trophy_privilege(meta, player)

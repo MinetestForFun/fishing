@@ -142,11 +142,11 @@ local FISHING_BOBBER_SHARK_ENTITY={
 			-- if fish or others items, move bobber to simulate fish on the line
 			if self.prize ~= "" and math.random(1,3) == 1 then
 				if self.old_pos2 == true then
-					pos.y = pos.y-0.0425
+					pos.y = pos.y-0.050
 					self.object:moveto(pos, false)
 					self.old_pos2 = false
 				else
-					pos.y = pos.y+0.0425
+					pos.y = pos.y+0.050
 					self.object:moveto(pos, false)
 					self.old_pos2 = true
 				end
@@ -173,7 +173,11 @@ local FISHING_BOBBER_SHARK_ENTITY={
 				self.prize = fishing_setting.prizes["treasure"][math.random(1,#fishing_setting.prizes["treasure"])]
 			end
 		elseif chance <= fishing_setting.settings["fish_chance"] then
-			self.prize = fishing_setting.prizes["shark"][math.random(1,#fishing_setting.prizes["shark"])]
+			if self.water_type and self.water_type == "sea" then
+				self.prize = fishing_setting.prizes["sea"]["big"][math.random(1,#fishing_setting.prizes["sea"]["big"])]
+			else
+				self.prize = fishing_setting.prizes["rivers"]["big"][math.random(1,#fishing_setting.prizes["rivers"]["big"])]
+			end
 		else
 			if math.random(1, 100) <= 10 then
 				self.prize = fishing_setting.func.get_loot()
@@ -181,7 +185,7 @@ local FISHING_BOBBER_SHARK_ENTITY={
 		end
 
 		if self.prize ~= "" then
-			pos.y = self.old_pos.y-0.2
+			pos.y = self.old_pos.y-0.140
 			self.object:moveto(pos, false)
 			minetest.sound_play("fishing_bobber1", {pos=pos,gain = 0.5,})
 		end

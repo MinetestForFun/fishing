@@ -39,7 +39,7 @@ local FISHING_BOBBER_ENTITY={
 	visual_size = {x=1/3, y=1/3, z=1/3},
 	textures = {"fishing:bobber_box"},
 	--             {left ,bottom, front, right,  top ,  back}
-	collisionbox = {-2/16, -4/16, -2/16,  2/16, 1/16,  2/16},
+	collisionbox = {-2/16, -4/16, -2/16,  2/16, 2/16,  2/16},
 	randomtime = 50,
 	baitball = 0,
 	prize = "",
@@ -169,7 +169,11 @@ local FISHING_BOBBER_ENTITY={
 
 		self.randomtime = math.random(1,5)*10
 		if math.random(1, 100) <= fishing_setting.settings["fish_chance"] then
-			self.prize = fishing_setting.prizes["fish"][math.random(1,#fishing_setting.prizes["fish"])]
+			if self.water_type and self.water_type == "sea" then
+				self.prize = fishing_setting.prizes["sea"]["little"][math.random(1,#fishing_setting.prizes["sea"]["little"])]
+			else
+				self.prize = fishing_setting.prizes["rivers"]["little"][math.random(1,#fishing_setting.prizes["rivers"]["little"])]
+			end
 		else
 			if math.random(1, 100) <= 10 then
 				self.prize = fishing_setting.func.get_loot()
