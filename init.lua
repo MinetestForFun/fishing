@@ -75,21 +75,8 @@ fishing_setting.func.hungry_random()
 fishing_setting.func.load_trophies()
 --load table contest
 fishing_setting.func.load_contest()
+fishing_setting.func.tick()
 
-
-minetest.register_globalstep(function(dtime)
-	if fishing_setting.contest["contest"] ~= nil and fishing_setting.contest["contest"] == true then
-		fishing_setting.contest["duration"] = fishing_setting.contest["duration"] - dtime
-
-		if fishing_setting.contest["duration"] < 30 and fishing_setting.contest["warning_said"] ~= true then
-			minetest.chat_send_all(fishing_setting.func.S("WARNING, Fishing contest will finish in 30 seconds."))
-			fishing_setting.contest["warning_said"] = true
-		end
-		if fishing_setting.contest["duration"] < 0 then
-			fishing_setting.func.end_contest()
-		end
-	end
-end)
 -----------------------------------------------------------------------------------------------
 minetest.log("action", "[Mod] "..title.." ["..version.."] ["..mname.."] Loaded...")
 -----------------------------------------------------------------------------------------------

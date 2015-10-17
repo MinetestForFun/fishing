@@ -386,8 +386,8 @@ end
 if (minetest.get_modpath("unified_inventory")) then
 	unified_inventory.register_button("menu_fishing", {
 		type = "image",
-		image = "fishing_fish_raw.png",
-		tooltip = "fishing menu configuration",
+		image = "fishing_perch_raw.png",
+		tooltip = "Fishing Menu Configuration",
 		action = function(player)
 			local player_name = player:get_player_name()
 			if not player_name then return end
@@ -497,6 +497,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 				local time = fishing_setting.func.timetostr(fishing_setting.contest["duration"])
 				minetest.chat_send_all(S("Attention, Fishing contest start (duration %s)!!!"):format(time))
 				minetest.sound_play("fishing_contest_start",{gain=0.8})
+				fishing_setting.func.tick()
 			elseif progress == true and fishing_setting.tmp_setting["contest"] == false then
 				fishing_setting.func.end_contest()
 			end
@@ -621,3 +622,20 @@ function fishing_setting.func.show_result()
 		end
 	end)
 end
+
+local UPDATE_TIME = 1
+function fishing_setting.func.tick()
+	if fishing_setting.contest["contest"] ~= nil and fishing_setting.contest["contest"] == true then
+		fishing_setting.contest["duration"] = fishing_setting.contest["duration"] - UPDATE_TIME
+		if fishing_setting.contest["duration"] < 30 and fishing_setting.contest["warning_said"] ~= true then
+			minetest.chat_send_all(fishing_setting.func.S("WARNING, Fishing contest will finish in 30 seconds."))
+			fishing_setting.contest["warning_said"] = true
+		end
+		if fishing_setting.contest["duration"] < 0 then
+			fishing_setting.func.end_contest()
+		else
+			minetest.after(UPDATE_TIME, fishing_setting.func.tick)
+		end
+	end
+end
+
