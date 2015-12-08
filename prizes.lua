@@ -24,7 +24,6 @@ fishing_setting.prizes["sea"]["big"] = {
 }
 
 
-
 local stuff = {
 --	 mod 						item						wear				message ("You caught "..)		nrmin  		chance (1/67)
 	{"flowers",					"seaweed",					0,					"some Seaweed.",				1,			5},
@@ -56,4 +55,19 @@ local treasure = {
 	{"default",					"diamondblock",				0,					"a Diamond Block."},
 }
 fishing_setting.prizes["treasure"] = fishing_setting.func.ignore_mod(treasure)
+
+
+-- to true fish mobs
+fishing_setting.prizes["true_fish"] = {little = {}, big = {}}
+--to mobs_fish modpack
+if (minetest.get_modpath("mobs_fish")) then
+	fishing_setting.prizes["true_fish"]["little"]["mobs_fish:clownfish"] = {"mobs_fish", "clownfish", 0, "a Clownfish."}
+	fishing_setting.prizes["true_fish"]["little"]["mobs_fish:tropical"] = {"mobs_fish", "tropical", 0, "a tropical fish."}
+end
+--to mobs_fish modpack
+if (minetest.get_modpath("mobs_sharks")) then
+	fishing_setting.prizes["true_fish"]["big"]["mobs_sharks:shark_lg"] = {"mobs_sharks", "shark_lg", 0, "a small Shark."}
+	fishing_setting.prizes["true_fish"]["big"]["mobs_sharks:shark_md"] = {"mobs_sharks", "shark_md", 0, "a small Shark."}
+	fishing_setting.prizes["true_fish"]["big"]["mobs_sharks:shark_sm"] = {"mobs_sharks", "shark_sm", 0, "a small Shark."}
+end
 

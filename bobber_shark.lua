@@ -48,12 +48,16 @@ local FISHING_BOBBER_SHARK_ENTITY={
 		if not puncher:is_player() then return end
 		local player_name = puncher:get_player_name()
 		if player_name ~= self.owner then return end
-		if fishing_setting.settings["message"] == true then minetest.chat_send_player(player_name, fishing_setting.func.S("You didn't catch anything."), false) end
+		if fishing_setting.settings["message"] == true then
+			minetest.chat_send_player(player_name, fishing_setting.func.S("You didn't catch anything."), false)
+		end
 		if not fishing_setting.is_creative_mode then
 			local inv = puncher:get_inventory()
 			if inv:room_for_item("main", {name=self.bait, count=1, wear=0, metadata=""}) then
 				inv:add_item("main", {name=self.bait, count=1, wear=0, metadata=""})
-				if fishing_setting.settings["message"] == true then minetest.chat_send_player(player_name, fishing_setting.func.S("The bait is still there."), false) end
+				if fishing_setting.settings["message"] == true then
+					minetest.chat_send_player(player_name, fishing_setting.func.S("The bait is still there."), false)
+				end
 			end
 		end
 		-- make sound and remove bobber
@@ -84,6 +88,12 @@ local FISHING_BOBBER_SHARK_ENTITY={
 						inv:add_item("main", {name=name, count=1, wear=wear_value, metadata=""})
 					else
 						minetest.spawn_item(clicker:getpos(), {name=name, count=1, wear=wear_value, metadata=""})
+					end
+				end
+			else
+				if not fishing_setting.is_creative_mode then
+					if inv:room_for_item("main", {name=self.bait, count=1, wear=0, metadata=""}) then
+						inv:add_item("main", {name=self.bait, count=1, wear=0, metadata=""})
 					end
 				end
 			end
@@ -118,7 +128,9 @@ local FISHING_BOBBER_SHARK_ENTITY={
 		--remove if not node water
 		local node = minetest.get_node_or_nil({x=pos.x, y=pos.y-0.5, z=pos.z})
 		if not node or string.find(node.name, "water_source") == nil then
-			if fishing_setting.settings["message"] == true then minetest.chat_send_player(self.owner, fishing_setting.func.S("Haha, Fishing is prohibited outside water!")) end
+			if fishing_setting.settings["message"] == true then
+				minetest.chat_send_player(self.owner, fishing_setting.func.S("Haha, Fishing is prohibited outside water!"))
+			end
 			self.object:remove()
 			return
 		end
@@ -156,6 +168,9 @@ local FISHING_BOBBER_SHARK_ENTITY={
 
 		--change item on line
 		self.timer = 0
+		if self.prize ~= "" and fishing_setting.have_true_fish and fishing_setting.prizes["true_fish"]["big"][self.prize[1]..":"..self.prize[2]] then
+			minetest.add_entity({x=pos.x, y=pos.y-1, z=pos.z}, self.prize[1]..":"..self.prize[2])
+		end
 		self.prize = ""
 		self.object:moveto(self.old_pos, false)
 		--Once the fish are not hungry :), baitball increase hungry + 20%
@@ -168,8 +183,8 @@ local FISHING_BOBBER_SHARK_ENTITY={
 		self.randomtime = math.random(1,5)*10
 		local chance = math.random(1, 100)
 		--if 1 you catch a treasure
-		if chance == 1 then
-			if math.random(1, 100) <= fishing_setting.settings["treasure_chance"] and fishing_setting.settings["treasure_enable"] then
+		if fishing_setting.settings["treasure_enable"] and chance == 1 then
+			if math.random(1, 100) <= fishing_setting.settings["treasure_chance"] then
 				self.prize = fishing_setting.prizes["treasure"][math.random(1,#fishing_setting.prizes["treasure"])]
 			end
 		elseif chance <= fishing_setting.settings["fish_chance"] then
@@ -178,10 +193,24 @@ local FISHING_BOBBER_SHARK_ENTITY={
 			else
 				self.prize = fishing_setting.prizes["rivers"]["big"][math.random(1,#fishing_setting.prizes["rivers"]["big"])]
 			end
-		else
-			if math.random(1, 100) <= 10 then
-				self.prize = fishing_setting.func.get_loot()
+
+			-- to mobs_fish modpack
+			if fishing_setting.have_true_fish then
+				local objs = minetest.get_objects_inside_radius({x=pos.x, y=pos.y-2, z=pos.z}, 3)
+				for _, obj in pairs(objs) do
+					if obj:get_luaentity() ~= nil then
+						local name = obj:get_luaentity().name
+						if fishing_setting.prizes["true_fish"]["big"][name] then
+							self.prize = fishing_setting.prizes["true_fish"]["big"][name]
+							obj:remove()
+							self.randomtime = math.random(3,7)*10
+							break
+						end
+					end
+				end
 			end
+		elseif math.random(1, 100) <= 10 then
+			self.prize = fishing_setting.func.get_loot()
 		end
 
 		if self.prize ~= "" then

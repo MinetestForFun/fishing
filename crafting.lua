@@ -127,6 +127,21 @@ minetest.register_craft({
 	cooktime = 2,
 })
 
+if minetest.get_modpath("mobs_fish") ~= nil then
+	minetest.register_craft({
+		type = "cooking",
+		output = "fishing:fish_cooked",
+		recipe = "mobs_fish:clownfish",
+		cooktime = 2,
+	})
+	minetest.register_craft({
+		type = "cooking",
+		output = "fishing:fish_cooked",
+		recipe = "mobs_fish:tropical",
+		cooktime = 2,
+	})
+end
+
 -----------------------------------------------------------------------------------------------
 -- Wheat Seed
 -----------------------------------------------------------------------------------------------
@@ -165,6 +180,27 @@ minetest.register_craft({
 	recipe = "fishing:shark_raw",
 	cooktime = 2,
 })
+
+if minetest.get_modpath("mobs_sharks") ~= nil then
+	minetest.register_craft({
+		type = "cooking",
+		output = "fishing:shark_cooked",
+		recipe = "mobs_sharks:shark_lg",
+		cooktime = 2,
+	})
+	minetest.register_craft({
+		type = "cooking",
+		output = "fishing:shark_cooked",
+		recipe = "mobs_sharks:shark_md",
+		cooktime = 2,
+	})
+	minetest.register_craft({
+		type = "cooking",
+		output = "fishing:shark_cooked",
+		recipe = "mobs_sharks:shark_sm",
+		cooktime = 2,
+	})
+end
 
 -----------------------------------------------------------------------------------------------
 -- Roasted Pike

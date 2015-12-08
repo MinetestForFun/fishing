@@ -122,6 +122,15 @@ minetest.register_entity("fishing:bait_worm_entity", {
 	end,
 })
 
+--- Bait Worm Entity
+minetest.register_craft({
+	output = "fishing:bait_worm 8",
+	recipe = {
+		{"default:dirt"},
+		{"default:dirt"},
+	}
+})
+
 -----------------------------------------------------------------------------------------------
 -- GETTING WORMS
 -----------------------------------------------------------------------------------------------

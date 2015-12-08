@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------------------------
 local title		= "Fishing - Crabman77's version"
-local version 	= "0.0.3"
+local version 	= "0.0.4"
 local mname		= "fishing"
 -----------------------------------------------------------------------------------------------
 -- original by wulfsdad (http://forum.minetest.net/viewtopic.php?id=4375)
@@ -54,6 +54,11 @@ fishing_setting.settings["shark_chance"] = SHARK_CHANCE
 fishing_setting.settings["treasure_chance"] = TREASURE_CHANCE
 fishing_setting.settings["treasure_enable"] = TREASURE_RANDOM_ENABLE
 fishing_setting.settings["escape_chance"] = ESCAPE_CHANCE
+
+-- to mobs_fish|mobs_sharks modpack
+if (minetest.get_modpath("mobs_fish") ~= nil or minetest.get_modpath("mobs_sharks") ~= nil) then
+  fishing_setting.have_true_fish = true
+end 
 
 -- load config file if exist in worldpath
 fishing_setting.func.load()

@@ -7,3 +7,5 @@ moreores?
 mobs?
 flowers_plus?
 seaplants?
+mobs_fish?
+mobs_sharks?

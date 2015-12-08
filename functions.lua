@@ -102,8 +102,19 @@ end
 --function random hungry by bait type
 function fishing_setting.func.hungry_random()
 	for i,a in pairs(fishing_setting.baits) do
-		fishing_setting.baits[i]["hungry"] = math.random(15, 80)
+		if string.find(i, "fishing:") ~= nil then
+			fishing_setting.baits[i]["hungry"] = math.random(15, 80)
+		end
 	end
+	
+	-- to mobs_fish modpack
+	if fishing_setting.baits["mobs_fish:clownfish"] then
+		fishing_setting.baits["mobs_fish:clownfish"]["hungry"] = fishing_setting.baits["fishing:clownfish_raw"]["hungry"]
+	end
+	if fishing_setting.baits["mobs_fish:tropical"] then
+		fishing_setting.baits["mobs_fish:tropical"]["hungry"] = fishing_setting.baits["fishing:exoticfish_raw"]["hungry"]
+	end
+
 	--change hungry after random time, min 0h30, max 6h00
 	minetest.after(math.random(1, 12)*1800,function() fishing_setting.func.hungry_random() end)
 end
@@ -344,22 +355,23 @@ end)
 function fishing_setting.func.add_to_trophies(player, fish, desc)
 	local player_name = player:get_player_name()
 	if not player_name then return end
-	if string.find(fish, "_raw") ~= nil then
-		if fishing_setting.trophies[fish] == nil then
-			fishing_setting.trophies[fish] = {}
-		end
-		fishing_setting.trophies[fish][player_name] = (fishing_setting.trophies[fish][player_name] or 0) + 1
-		if fishing_setting.trophies[fish][player_name]%100 == 0 then
-			minetest.chat_send_player(player_name, S("You win a new trophy, you have caught %s " .. fish.."."):format(fishing_setting.trophies[fish][player_name]))
-			local inv = player:get_inventory()
-			local name = "fishing:trophy_"..fish
-			if inv:room_for_item("main", {name=name, count=1, wear=0, metadata=""}) then
-				inv:add_item("main", {name=name, count=1, wear=0, metadata=""})
-			else
-				minetest.spawn_item(player:getpos(), {name=name, count=1, wear=0, metadata=""})
+	if string.find(fish, "_raw") ~= nil or fishing_setting.prizes["true_fish"]["little"][fish] or fishing_setting.prizes["true_fish"]["big"][fish] then
+		if string.find(fish, "_raw") ~= nil then
+			if fishing_setting.trophies[fish] == nil then
+				fishing_setting.trophies[fish] = {}
+			end		
+			fishing_setting.trophies[fish][player_name] = (fishing_setting.trophies[fish][player_name] or 0) + 1
+			if fishing_setting.trophies[fish][player_name]%100 == 0 then
+				minetest.chat_send_player(player_name, S("You win a new trophy, you have caught %s " .. fish.."."):format(fishing_setting.trophies[fish][player_name]))
+				local inv = player:get_inventory()
+				local name = "fishing:trophy_"..fish
+				if inv:room_for_item("main", {name=name, count=1, wear=0, metadata=""}) then
+					inv:add_item("main", {name=name, count=1, wear=0, metadata=""})
+				else
+					minetest.spawn_item(player:getpos(), {name=name, count=1, wear=0, metadata=""})
+				end
 			end
 		end
-
 		if fishing_setting.contest["contest"] ~= nil and fishing_setting.contest["contest"] == true then
 			if fishing_setting.contest["nb_fish"] == nil then
 				fishing_setting.contest["nb_fish"] = {}
@@ -582,9 +594,11 @@ function fishing_setting.func.get_hunger_info(player_name)
 	local formspec = "size[6,9]label[1.9,0;Fishing Info Center]"
 	local y = 0.8
 	for i, a in pairs(fishing_setting.baits) do
-		formspec = formspec .."item_image_button[1,"..tostring(y)..";1,1;"..tostring(i)..";"..tostring(i)..";]"..
-			"label[2.2,"..tostring(y+0.2)..";Chance to fish :"..tostring(a["hungry"]).."%]"
-		y = y+1
+		if string.find(i, "fishing:") ~= nil then
+			formspec = formspec .."item_image_button[1,"..tostring(y)..";1,1;"..tostring(i)..";"..tostring(i)..";]"..
+				"label[2.2,"..tostring(y+0.2)..";Chance to fish :"..tostring(a["hungry"]).."%]"
+			y = y+1
+		end
 	end
 	formspec = formspec .."button_exit[2,8.5;2,1;close;"..S("Close").."]"
 	minetest.show_formspec(player_name,"fishing:material_info", formspec)

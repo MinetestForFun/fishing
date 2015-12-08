@@ -28,3 +28,10 @@ fishing_setting.baits["fishing:clownfish_raw"] = { ["bait"] = "fishing:clownfish
 fishing_setting.baits["fishing:bluewhite_raw"] = { ["bait"] = "fishing:bluewhite_raw", ["bobber"] = "fishing:bobber_shark_entity",["texture"] = "fishing_bluewhite_raw.png", ["hungry"] = 50 }
 
 fishing_setting.baits["fishing:exoticfish_raw"] = { ["bait"] = "fishing:exoticfish_raw", ["bobber"] = "fishing:bobber_shark_entity",["texture"] = "fishing_exoticfish_raw.png", ["hungry"] = 50 }
+
+-- to mob_fish modpack
+if (minetest.get_modpath("mobs_fish")) then
+	fishing_setting.baits["mobs_fish:clownfish"] = { ["bait"] = "mobs_fish:clownfish", ["bobber"] = "fishing:bobber_shark_entity", ["hungry"] = 50 }
+	fishing_setting.baits["mobs_fish:tropical"] = { ["bait"] = "mobs_fish:tropical", ["bobber"] = "fishing:bobber_shark_entity", ["hungry"] = 50 }
+end
+
