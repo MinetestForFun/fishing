@@ -2,7 +2,7 @@
 ## Minetest Fishing Mod    
 
 ### Original by Mossmanikin https://github.com/Mossmanikin/fishing  
-### Rewrited by Crabman77  
+### Rewrited by Crabman77 (MFF team)
 
 ###9 fish type
 **fish in rivers** 

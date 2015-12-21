@@ -106,7 +106,7 @@ function fishing_setting.func.hungry_random()
 			fishing_setting.baits[i]["hungry"] = math.random(15, 80)
 		end
 	end
-	
+
 	-- to mobs_fish modpack
 	if fishing_setting.baits["mobs_fish:clownfish"] then
 		fishing_setting.baits["mobs_fish:clownfish"]["hungry"] = fishing_setting.baits["fishing:clownfish_raw"]["hungry"]
@@ -116,18 +116,20 @@ function fishing_setting.func.hungry_random()
 	end
 
 	--change hungry after random time, min 0h30, max 6h00
-	minetest.after(math.random(1, 12)*1800,function() fishing_setting.func.hungry_random() end)
+	minetest.after(math.random(1, 12)*1800, fishing_setting.func.hungry_random )
 end
 
 
 function fishing_setting.func.get_loot()
-	local c = math.random(1, 67)
-	for i in pairs(fishing_setting.prizes["stuff"]) do
-		local min = fishing_setting.prizes["stuff"][i][5]
-		local chance = fishing_setting.prizes["stuff"][i][6]
-		local max = min + chance - 1
-		if c <= max and c >= min then
-			return fishing_setting.prizes["stuff"][i]
+	if #fishing_setting.prizes["stuff"] > 0 then
+		local c = math.random(1, fishing_setting.prizes["stuff"][#fishing_setting.prizes["stuff"]][5])
+		for i in pairs(fishing_setting.prizes["stuff"]) do
+			local min = fishing_setting.prizes["stuff"][i][5]
+			local chance = fishing_setting.prizes["stuff"][i][6]
+			local max = min + chance
+			if c <= max and c >= min then
+				return fishing_setting.prizes["stuff"][i]
+			end
 		end
 	end
 	return ""

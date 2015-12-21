@@ -37,7 +37,9 @@ for _,pole in pairs(fishing_setting.poles) do
 				local objs = minetest.get_objects_inside_radius(pt.under, 1)
 				for m, obj in pairs(objs) do
 					if obj:get_luaentity() ~= nil and string.find(obj:get_luaentity().name, "fishing:bobber") then
-						if fishing_setting.settings["message"] == true then minetest.chat_send_player(player_name, S("Sorry, there is another bobber!")) end
+						if fishing_setting.settings["message"] == true then
+							minetest.chat_send_player(player_name, S("Sorry, there is another bobber!"))
+						end
 						return nil
 					end
 				end

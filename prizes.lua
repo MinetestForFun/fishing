@@ -24,29 +24,39 @@ fishing_setting.prizes["sea"]["big"] = {
 }
 
 
+if (minetest.get_modpath("flowers_plus")) then -- exception flowers_plus register flowers:*
+ minetest.register_alias("flowers_plus:seaweed", "flowers:seaweed")
+end
+
 local stuff = {
---	 mod 						item						wear				message ("You caught "..)		nrmin  		chance (1/67)
-	{"flowers",					"seaweed",					0,					"some Seaweed.",				1,			5},
-	{"farming",					"string",					0,					"a String.",					6,			5},
-	{"trunks",					"twig_1",					0,					"a Twig.",						11,			5},
-	{"mobs",					"rat",						0,					"a Rat.",						16,			5},
-	{"default",					"stick",					0,					"a Twig.",						21,			5},
-	{"seaplants",				"kelpgreen",				0,					"a Green Kelp.",				26,			5},
-	{"3d_armor",				"boots_steel",				"random",			"some very old Boots.",			31,			2},
-	{"3d_armor",				"leggings_gold",			"random",			"some very old Leggings.",		33,			5},
-	{"3d_armor",				"chestplate_bronze",		"random",			"a very old ChestPlate.",		38,			5},
-	{"fishing",					"pole_wood",				"randomtools",		"an old Fishing Pole.",			43,			10},
-	{"3d_armor",				"boots_wood",				"random",			"some very old Boots.",			53,			5},
-	{"maptools",				"gold_coin",				0,					"a Gold Coin.",					58,			1},
-	{"3d_armor",				"helmet_diamond",			"random",			"a very old Helmet.",			59,			1},
-	{"shields",					"shield_enhanced_cactus",	"random",			"a very old Shield.",			60,			2},
-	{"default",					"sword_bronze",				"random",			"a very old Sword.",			62,			2},
-	{"default",					"sword_mese",				"random",			"a very old Sword.",			64,			2},
-	{"default",					"sword_nyan",				"random",			"a very old Sword.",			66,			2},
---	nom mod						nom item					durabilité 			message dans le chat		 				-- fin 67
---															de l'objet
+--	 mod 						item						wear				message ("You caught "..)		  		chance
+	{"flowers_plus",			"seaweed",					0,					"some Seaweed.",						10},
+	{"farming",					"string",					0,					"a String.",							5},
+	{"trunks",					"twig_1",					0,					"a Twig.",								5},
+	{"mobs",					"rat",						0,					"a Rat.",								5},
+	{"default",					"stick",					0,					"a Twig.",								5},
+	{"seaplants",				"kelpgreen",				0,					"a Green Kelp.",						5},
+	{"3d_armor",				"boots_steel",				"random",			"some very old Boots.",					2},
+	{"3d_armor",				"leggings_gold",			"random",			"some very old Leggings.",				5},
+	{"3d_armor",				"chestplate_bronze",		"random",			"a very old ChestPlate.",				5},
+	{"fishing",					"pole_wood",				"randomtools",		"an old Fishing Pole.",					10},
+	{"3d_armor",				"boots_wood",				"random",			"some very old Boots.",					5},
+	{"maptools",				"gold_coin",				0,					"a Gold Coin.",							1},
+	{"3d_armor",				"helmet_diamond",			"random",			"a very old Helmet.",					1},
+	{"shields",					"shield_enhanced_cactus",	"random",			"a very old Shield.",					2},
+	{"default",					"sword_bronze",				"random",			"a very old Sword.",					2},
+	{"default",					"sword_mese",				"random",			"a very old Sword.",					2},
+	{"default",					"sword_nyan",				"random",			"a very old Sword.",					2},
 }
-fishing_setting.prizes["stuff"] = fishing_setting.func.ignore_mod(stuff)
+
+fishing_setting.prizes["stuff"] = {}
+local nrmin = 1
+for i,v in ipairs(stuff) do
+	if minetest.get_modpath(v[1]) ~= nil and minetest.registered_items[v[1]..":"..v[2]] ~= nil then
+		table.insert(fishing_setting.prizes["stuff"], {v[1], v[2], v[3], v[4], nrmin, v[5]})
+		nrmin = nrmin + v[5]
+	end
+end
 
 
 local treasure = {

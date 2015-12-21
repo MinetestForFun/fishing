@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------------------------
-local title		= "Fishing - Crabman77's version"
-local version 	= "0.0.4"
+local title		= "Fishing - Crabman77's (MFF team) version"
+local version 	= "0.0.5"
 local mname		= "fishing"
 -----------------------------------------------------------------------------------------------
 -- original by wulfsdad (http://forum.minetest.net/viewtopic.php?id=4375)

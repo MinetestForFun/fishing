@@ -158,7 +158,7 @@ if minetest.get_modpath("flowers_plus") ~= nil then
 	minetest.register_craft({
 		type = "shapeless",
 		output = "fishing:sushi",
-		recipe = {"fishing:fish_cooked", "farming:seed_wheat", "flowers:seaweed" },
+		recipe = {"fishing:fish_cooked", "farming:seed_wheat", "flowers_plus:seaweed" },
 	})
 end
 
