@@ -28,11 +28,8 @@ minetest.register_node("fishing:bobber_shark_box", {
 
 
 local FISHING_BOBBER_SHARK_ENTITY={
-	hp_max = 605,
-	water_damage = 1,
 	physical = true,
 	timer = 0,
-	env_damage_timer = 0,
 	visual = "wielditem",
 	visual_size = {x=1/3, y=1/3, z=1/3},
 	textures = {"fishing:bobber_shark_box"},
@@ -42,6 +39,10 @@ local FISHING_BOBBER_SHARK_ENTITY={
 	baitball = 0,
 	prize = "",
 	bait = "",
+	owner = nil,
+	old_pos = nil,
+	old_pos2 = nil,
+
 
 --  DESTROY BOBBER WHEN PUNCHING IT
 	on_punch = function (self, puncher, time_from_last_punch, tool_capabilities, dir)
@@ -70,9 +71,14 @@ local FISHING_BOBBER_SHARK_ENTITY={
 	on_rightclick = function (self, clicker)
 		local item = clicker:get_wielded_item()
 		local player_name = clicker:get_player_name()
+		if not player_name or not self.owner then
+			self.object:remove()
+			return
+		end
 		local inv = clicker:get_inventory()
 		local pos = self.object:getpos()
 		local item_name = item:get_name()
+
 		if string.find(item_name, "fishing:pole_") ~= nil then
 			if player_name ~= self.owner then return end
 			if self.prize ~= "" then
