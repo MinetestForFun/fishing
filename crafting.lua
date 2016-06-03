@@ -45,7 +45,8 @@ if minetest.get_modpath("ropes") ~= nil then
 end
 
 -- Mithril Fishing Pole
-if minetest.get_modpath("moreores") ~= nil and minetest.get_modpath("mobs") ~= nil then
+-- Some subgames have bundled all of moreores' content in their default mod; just check for mithril
+if (minetest.get_modpath("moreores") ~= nil or minetest.registered_items["default:mithril_ingot"]) and minetest.get_modpath("mobs") ~= nil then
 minetest.register_craft({
 	output = "fishing:pole_perfect",
 	recipe = {
