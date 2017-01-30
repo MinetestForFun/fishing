@@ -16,6 +16,9 @@ minetest.register_craftitem("fishing:bait_worm", {
 	groups = { fishing_bait=1 },
 	inventory_image = "fishing_bait_worm.png",
 	on_place = function(itemstack, placer, pointed_thing)
+		if not placer then -- can happen, e.g. if placed using minetest.place_node
+			return itemstack
+		end
 		local pt = pointed_thing
 		if not minetest.is_protected(pt.under, placer:get_player_name()) then
 			minetest.add_entity({x=pt.under.x, y=pt.under.y+0.6, z=pt.under.z}, "fishing:bait_worm_entity")
