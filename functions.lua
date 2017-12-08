@@ -584,7 +584,7 @@ minetest.register_chatcommand("contest_start", {
 	privs = {server=true},
 	func = function(player_name, param)
 		if not player_name then return end
-		if fishing_setting.contest["contest"] == true end
+		if fishing_setting.contest["contest"] == true then
 			return false, "Contest already in progress."
 		end
 		
@@ -604,7 +604,7 @@ minetest.register_chatcommand("contest_stop", {
 	privs = {server=true},
 	func = function(player_name, param)
 		if not player_name then return end
-		if fishing_setting.contest["contest"] == false end
+		if fishing_setting.contest["contest"] == false then
 			return false, "No contest in progress."
 		end
 		fishing_setting.func.end_contest()
