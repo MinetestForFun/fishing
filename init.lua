@@ -22,8 +22,10 @@ fishing_setting.is_creative_mode = minetest.setting_getbool("creative_mode")
 fishing_setting.file_settings = minetest.get_worldpath() .. "/fishing_config.txt"
 fishing_setting.file_trophies = minetest.get_worldpath() .. "/fishing_trophies.txt"
 fishing_setting.file_contest = minetest.get_worldpath() .. "/fishing_contest.txt"
+fishing_setting.file_planned = minetest.get_worldpath() .. "/fishing_planned.txt"
 fishing_setting.settings = {}
 fishing_setting.contest = {}
+fishing_setting.planned = {}
 --for random object
 random_objects = {}
 fishing_setting.baits = {}
@@ -81,7 +83,7 @@ fishing_setting.func.load_trophies()
 --load table contest
 fishing_setting.func.load_contest()
 fishing_setting.func.tick()
-
+fishing_setting.func.planned_tick()
 -----------------------------------------------------------------------------------------------
 minetest.log("action", "[Mod] "..title.." ["..version.."] ["..mname.."] Loaded...")
 -----------------------------------------------------------------------------------------------

@@ -4,13 +4,13 @@
 ### Original by Mossmanikin https://github.com/Mossmanikin/fishing  
 ### Rewrited by Crabman77 (MFF team)
 
-###9 fish type
-**fish in rivers** 
+### **9 fish type**  
+**fish in rivers**  
 > - 2 small fish (fish, carp)  
 > - 3 predator fish (perch, catfish, Northern Pike)  
 
-**fish in sea**
->- 3 small fish (clownfish,bluewhite fish, exotic fish)  
+**fish in sea**  
+> - 3 small fish (clownfish,bluewhite fish, exotic fish)  
 > - 1 predator fish (small shark)  
 
 
@@ -20,7 +20,7 @@
 The baits have a variable luck(15% to 80%) changed between 30 minutes to 6 hours for a better gameplay  
 Baitball improves lucky bait of 20%  
 
-###**Contest Game **  
+### **Contest Game **  
 Contest game can be launched by admin, duration variable 2min to 4heures  
 Start/End is announced in chat and sound  
 A ranking appears(formspec) after contest  
@@ -28,6 +28,18 @@ A ranking appears(formspec) after contest
 Adjustable settings in formspec  
 if the unified_inventory mod is actived there is a button for classification or settings for the admin only  
 
+
+## **schedule**   
+### **Chatcommand**  
+**contest_show**  
+**contest_stop**  
+**contest_del number(view with contest_show)**  
+**contest_start duration(in seconds)**  
+> -  contest_start 3600  
+
+**contest_add wday hour minutes duration**  
+> - contest_add 0 15 30 3600  
+> - Wday 0=all, 1=sunday, 2=Monday, ..., 7=Saturday  
 
 [demo video youtube](https://youtu.be/8rt8g3F2Gmk)  
 

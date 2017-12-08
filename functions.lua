@@ -452,11 +452,185 @@ function fishing_setting.func.load_contest()
 	end
 end
 
+function fishing_setting.func.start_contest(duration)
+	fishing_setting.contest["contest"] = true
+	fishing_setting.contest["warning_said"] = false
+	fishing_setting.contest["duration"] = duration
+	minetest.chat_send_all(S("Attention, Fishing contest start (duration %s)!!!"):format(duration))
+	minetest.sound_play("fishing_contest_start",{gain=0.8})
+	fishing_setting.func.save_contest()
+	fishing_setting.func.tick()
+end
+
 function fishing_setting.func.end_contest()
 	fishing_setting.contest["contest"] = false
+	fishing_setting.func.save_contest()
 	minetest.chat_send_all(S("End of fishing contest."))
 	minetest.sound_play("fishing_contest_end",{gain=0.8})
 	fishing_setting.func.show_result()
+end
+
+
+--function load planned contest from file
+function fishing_setting.func.load_planned()
+	local file = io.open(fishing_setting.file_planned, "r")
+	local settings = {}
+	if file then
+		settings = minetest.deserialize(file:read("*all"))
+		file:close()
+		if settings and type(settings) == "table" then
+			for i, p in pairs(settings) do
+				if p["wday"] ~= nil and p["hour"] ~= nil and p["min"] ~= nil and p["duration"] ~= nil then
+					table.insert(fishing_setting.planned, {["wday"]=p["wday"], ["hour"]=p["hour"], ["min"]=p["min"], ["duration"]=p["duration"]})
+				end
+			end
+		end
+	end
+end
+fishing_setting.func.load_planned()
+
+
+
+function fishing_setting.func.save_planned()
+	local input = io.open(fishing_setting.file_planned, "w")
+	if input then
+		input:write(minetest.serialize(fishing_setting.planned))
+		input:close()
+	else
+		minetest.log("action","Open failed (mode:w) of " .. fishing_setting.file_planned)
+	end
+end
+
+minetest.register_chatcommand("contest_add", {
+	params = "Wday Hours Minutes duration(in sec) (ex: 1 15 40 3600)",
+	description = "Add contest (admin only)",
+	privs = {server=true},
+	func = function(player_name, param)
+		if not player_name then return end
+		local wday, hour, min, duration = param:match("^(%d+)%s(%d+)%s(%d+)%s(%d+)$")
+		if ((not wday or not tonumber(wday)) or (not hour or not tonumber(hour)) or (not min and not tonumber(min)) or (not duration or not tonumber(duration))) then
+			return false, "Invalid usage, see /help contest_add."
+		end
+
+		wday = tonumber(wday)
+		hour = tonumber(hour)
+		min = tonumber(min)
+		duration = tonumber(duration)
+
+		if (wday < 0 or wday > 7) then
+			return false, "Invalid argument wday, 0-7 (0=all 1=Sunday)."
+		end
+
+		if (hour < 0 or hour > 23) then
+			return false, "Invalid argument hour, 0-23."
+		end
+		if (min < 0 or min > 59) then
+			return false, "Invalid argument minutes, 0-59."
+		end
+
+		if duration < 600 then
+			duration = 600
+		elseif duration > 14400 then
+			duration = 14400
+		end
+
+		table.insert(fishing_setting.planned, {["wday"]=wday, ["hour"]=hour, ["min"]=min, ["duration"]=duration})
+		fishing_setting.func.save_planned()
+		return true, ("new contest registered %d %d:%d duration %d."):format(wday, hour, min, duration)
+	end
+})
+
+minetest.register_chatcommand("contest_del", {
+	params = "List number(show by contest_show command) ",
+	description = "Delete planned contest(admin only)",
+	privs = {server=true},
+	func = function(player_name, param)
+		if not player_name then return end
+		local i = tonumber(param)
+		if not i then
+			return false, "Invalid usage, see /help contest_del."
+		end
+		if i < 1 then
+			return false, "Invalid usage, see /help contest_del."
+		end
+		
+		local c = fishing_setting.planned[i]
+		if not c then
+			return false, "Contest no found"
+		end
+		table.remove(fishing_setting.planned, i)
+		fishing_setting.func.save_planned()
+		return true, "contest deleted"
+	end
+})
+
+minetest.register_chatcommand("contest_show", {
+	params = "",
+	description = "Display planned contest(admin only)",
+	privs = {server=true},
+	func = function(player_name, param)
+		if not player_name then return end
+		local text = "Registered contest:\n"
+		for i, plan in pairs(fishing_setting.planned) do
+			text = text ..("%d) wday:%d hour:%d min:%d duration %d.\n"):format(i, plan.wday, plan.hour, plan.min, plan.duration)
+		end
+		return true, text
+	end
+})
+
+minetest.register_chatcommand("contest_start", {
+	params = "Duration in seconds",
+	description = "Start contest (admin only)",
+	privs = {server=true},
+	func = function(player_name, param)
+		if not player_name then return end
+		if fishing_setting.contest["contest"] == true end
+			return false, "Contest already in progress."
+		end
+		
+		local duration = tonumber(param)
+		if not duration then
+			duration = 3600
+		end
+		fishing_setting.contest["nb_fish"] = {}
+		fishing_setting.func.start_contest(duration)
+		return true, ("Contest started, duration:%d sec."):format(duration)
+	end
+})
+
+minetest.register_chatcommand("contest_stop", {
+	params = "",
+	description = "Stop contest (admin only)",
+	privs = {server=true},
+	func = function(player_name, param)
+		if not player_name then return end
+		if fishing_setting.contest["contest"] == false end
+			return false, "No contest in progress."
+		end
+		fishing_setting.func.end_contest()
+		return true, "Contest finished."
+	end
+})
+
+function fishing_setting.func.planned_tick()
+	if fishing_setting.contest["contest"] == nil or fishing_setting.contest["contest"] == false then
+		for i, plan in pairs(fishing_setting.planned) do
+			local wday = plan.wday
+			local hour = plan.hour
+			local min = plan.min
+			local duration = plan.duration
+			local time = os.date("*t",os.time())
+			if (wday == 0 or wday == time.wday) then
+				if time.hour == hour and time.min == min then
+					minetest.log("action", ("Starting fishing contest at %d:%d duration %d"):format( hour, min, duration))
+					fishing_setting.contest["nb_fish"] = {}
+					fishing_setting.func.start_contest(duration)
+					break
+				end
+			end
+		end
+	end
+	minetest.after(50, fishing_setting.func.planned_tick)
 end
 
 --Menu fishing configuration
@@ -506,12 +680,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			fishing_setting.contest["contest"] = fishing_setting.tmp_setting["contest"]
 			fishing_setting.contest["bobber_nb"] = fishing_setting.tmp_setting["bobber_nb"]
 			if progress == false and fishing_setting.tmp_setting["contest"] == true then
-				fishing_setting.contest["contest"] = true
-				fishing_setting.contest["warning_said"] = false
-				local time = fishing_setting.func.timetostr(fishing_setting.contest["duration"])
-				minetest.chat_send_all(S("Attention, Fishing contest start (duration %s)!!!"):format(time))
-				minetest.sound_play("fishing_contest_start",{gain=0.8})
-				fishing_setting.func.tick()
+				local duration = fishing_setting.func.timetostr(fishing_setting.contest["duration"])
+				fishing_setting.func.start_contest(duration)
 			elseif progress == true and fishing_setting.tmp_setting["contest"] == false then
 				fishing_setting.func.end_contest()
 			end
@@ -617,8 +787,8 @@ minetest.register_chatcommand("fishing_menu", {
 })
 
 minetest.register_chatcommand("fishing_classement", {
-	params = "display classement",
-	description = "",
+	params = "",
+	description = "display classement",
 	privs = {interact=true},
 	func = function(player_name, param)
 		if not player_name then return end
