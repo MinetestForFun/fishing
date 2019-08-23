@@ -62,7 +62,7 @@ local FISHING_BOBBER_SHARK_ENTITY={
 			end
 		end
 		-- make sound and remove bobber
-		minetest.sound_play("fishing_bobber1", { pos = self.object:getpos(), gain = 0.5, })
+		minetest.sound_play("fishing_bobber1", { pos = self.object:get_pos(), gain = 0.5, })
 		self.object:remove()
 	end,
 
@@ -76,7 +76,7 @@ local FISHING_BOBBER_SHARK_ENTITY={
 			return
 		end
 		local inv = clicker:get_inventory()
-		local pos = self.object:getpos()
+		local pos = self.object:get_pos()
 		local item_name = item:get_name()
 
 		if string.find(item_name, "fishing:pole_") ~= nil then
@@ -97,7 +97,7 @@ local FISHING_BOBBER_SHARK_ENTITY={
 					if inv:room_for_item("main", {name=name, count=1, wear=wear_value, metadata=""}) then
 						inv:add_item("main", {name=name, count=1, wear=wear_value, metadata=""})
 					else
-						minetest.spawn_item(clicker:getpos(), {name=name, count=1, wear=wear_value, metadata=""})
+						minetest.spawn_item(clicker:get_pos(), {name=name, count=1, wear=wear_value, metadata=""})
 					end
 				end
 			else
@@ -108,7 +108,7 @@ local FISHING_BOBBER_SHARK_ENTITY={
 				end
 			end
 			-- weither player has fishing pole or not
-			minetest.sound_play("fishing_bobber1", { pos = self.object:getpos(), gain = 0.5, })
+			minetest.sound_play("fishing_bobber1", { pos = self.object:get_pos(), gain = 0.5, })
 			self.object:remove()
 
 		elseif item_name == "fishing:baitball_shark" then
@@ -132,7 +132,7 @@ local FISHING_BOBBER_SHARK_ENTITY={
 
 -- AS SOON AS THE BOBBER IS PLACED IT WILL ACT LIKE
 	on_step = function(self, dtime)
-		local pos = self.object:getpos()
+		local pos = self.object:get_pos()
 		--remove if no owner, no player, owner no in bobber_view_range
 		if self.owner == nil then self.object:remove(); return end
 		--remove if not node water
@@ -146,17 +146,17 @@ local FISHING_BOBBER_SHARK_ENTITY={
 		end
 		local player = minetest.get_player_by_name(self.owner)
 		if not player then self.object:remove(); return end
-		local p = player:getpos()
+		local p = player:get_pos()
 		local dist = ((p.x-pos.x)^2 + (p.y-pos.y)^2 + (p.z-pos.z)^2)^0.5
 		if dist > fishing_setting.settings["bobber_view_range"] then
-			minetest.sound_play("fishing_bobber1", {pos = self.object:getpos(),gain = 0.5,})
+			minetest.sound_play("fishing_bobber1", {pos = self.object:get_pos(),gain = 0.5,})
 			self.object:remove()
 			return
 		end
 
 		--rotate bobber
 		if math.random(1, 4) == 1 then
-			self.object:setyaw(self.object:getyaw()+((math.random(0,360)-180)/2880*math.pi))
+			self.object:setyaw(self.object:get_yaw()+((math.random(0,360)-180)/2880*math.pi))
 		end
 
 		self.timer = self.timer + 1
@@ -165,11 +165,11 @@ local FISHING_BOBBER_SHARK_ENTITY={
 			if self.prize ~= "" and math.random(1,3) == 1 then
 				if self.old_pos2 == true then
 					pos.y = pos.y-0.050
-					self.object:moveto(pos, false)
+					self.object:move_to(pos, false)
 					self.old_pos2 = false
 				else
 					pos.y = pos.y+0.050
-					self.object:moveto(pos, false)
+					self.object:move_to(pos, false)
 					self.old_pos2 = true
 				end
 			end
@@ -182,7 +182,7 @@ local FISHING_BOBBER_SHARK_ENTITY={
 			minetest.add_entity({x=pos.x, y=pos.y-1, z=pos.z}, self.prize[1]..":"..self.prize[2])
 		end
 		self.prize = ""
-		self.object:moveto(self.old_pos, false)
+		self.object:move_to(self.old_pos, false)
 		--Once the fish are not hungry :), baitball increase hungry + 20%
 		if math.random(1, 100) > fishing_setting.baits[self.bait]["hungry"] + self.baitball then
 			--Fish not hungry !(
@@ -225,7 +225,7 @@ local FISHING_BOBBER_SHARK_ENTITY={
 
 		if self.prize ~= "" then
 			pos.y = self.old_pos.y-0.140
-			self.object:moveto(pos, false)
+			self.object:move_to(pos, false)
 			minetest.sound_play("fishing_bobber1", {pos=pos,gain = 0.5,})
 		end
 	end,

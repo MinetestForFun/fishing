@@ -370,7 +370,7 @@ function fishing_setting.func.add_to_trophies(player, fish, desc)
 				if inv:room_for_item("main", {name=name, count=1, wear=0, metadata=""}) then
 					inv:add_item("main", {name=name, count=1, wear=0, metadata=""})
 				else
-					minetest.spawn_item(player:getpos(), {name=name, count=1, wear=0, metadata=""})
+					minetest.spawn_item(player:get_pos(), {name=name, count=1, wear=0, metadata=""})
 				end
 			end
 		end
@@ -487,9 +487,8 @@ function fishing_setting.func.load_planned()
 		end
 	end
 end
+
 fishing_setting.func.load_planned()
-
-
 
 function fishing_setting.func.save_planned()
 	local input = io.open(fishing_setting.file_planned, "w")
@@ -824,4 +823,3 @@ function fishing_setting.func.tick()
 		end
 	end
 end
-
