@@ -57,11 +57,11 @@ minetest.register_entity("fishing:bait_worm_entity", {
 	end,
 	-- AI :D
 	on_step = function(self, dtime)
-		local pos = self.object:getpos()
+		local pos = self.object:get_pos()
 		-- despawn when no player in range
 		local remove_entity = true
 		for _,player in pairs(minetest.get_connected_players()) do
-			local p = player:getpos()
+			local p = player:get_pos()
 			local dist = ((p.x-pos.x)^2 + (p.y-pos.y)^2 + (p.z-pos.z)^2)^0.5
 			if dist < 25 then
 				remove_entity = false
@@ -77,24 +77,24 @@ minetest.register_entity("fishing:bait_worm_entity", {
 		local look_whats_up = function(self)
 			self.object:set_hp(self.object:get_hp()-self.damage_over_time) -- creature is getting older
 			if n.name == "air" then -- fall when in air
-				self.object:moveto({x=pos.x,y=pos.y-0.5,z=pos.z})
+				self.object:move_to({x=pos.x,y=pos.y-0.5,z=pos.z})
 				self.object:set_hp(self.object:get_hp()-75)
 
 			--if n.name == "snappy" then -- fall when leaves or similar
 			elseif minetest.get_item_group(n.name, "snappy") ~= 0 then
-				self.object:moveto({x=pos.x+(0.001*(math.random(-32, 32))),y=pos.y-(0.001*(math.random(0, 64))),z=pos.z+(0.001*(math.random(-32, 32)))})
+				self.object:move_to({x=pos.x+(0.001*(math.random(-32, 32))),y=pos.y-(0.001*(math.random(0, 64))),z=pos.z+(0.001*(math.random(-32, 32)))})
 
 			elseif string.find(n.name, "default:water") then -- sink when in water
-				self.object:moveto({x=pos.x,y=pos.y-0.25,z=pos.z})
+				self.object:move_to({x=pos.x,y=pos.y-0.25,z=pos.z})
 				self.object:set_hp(self.object:get_hp()-37)
 
 			elseif minetest.get_item_group(n.name, "soil") ~= 0 then
 				if minetest.get_item_group(minetest.get_node({x=pos.x,y=pos.y-0.1,z=pos.z}).name, "soil") == 0 and self.object:get_hp() > 200 then
 					self.object:set_hp(199)
 				elseif self.object:get_hp() > 200 then -- leave dirt to see whats going on
-					self.object:moveto({x=pos.x+(0.001*(math.random(-2, 2))),y=pos.y+0.003,z=pos.z+(0.001*(math.random(-2, 2)))})
+					self.object:move_to({x=pos.x+(0.001*(math.random(-2, 2))),y=pos.y+0.003,z=pos.z+(0.001*(math.random(-2, 2)))})
 				elseif self.object:get_hp() < 199 then -- no rain here, let's get outa here
-					self.object:moveto({x=pos.x+(0.001*(math.random(-2, 2))),y=pos.y-0.001,z=pos.z+(0.001*(math.random(-2, 2)))})
+					self.object:move_to({x=pos.x+(0.001*(math.random(-2, 2))),y=pos.y-0.001,z=pos.z+(0.001*(math.random(-2, 2)))})
 				elseif self.object:get_hp() == 0 then
 					self.object:remove()
 				end
@@ -111,15 +111,15 @@ minetest.register_entity("fishing:bait_worm_entity", {
 				local goal_4a = check_group(minetest.get_node({x = pos.x, 	  y = pos.y+0.6, z = pos.z - 1}).name, "soil")
 				-- if there's dirt nearby, go there
 				if     goal_01 ~= 0 or goal_1a ~= 0 then
-					self.object:moveto({x=pos.x+0.002,y=pos.y,z=pos.z+(0.001*(math.random(-2, 2)))})
+					self.object:move_to({x=pos.x+0.002,y=pos.y,z=pos.z+(0.001*(math.random(-2, 2)))})
 				elseif goal_02 ~= 0 or goal_2a ~= 0 then
-					self.object:moveto({x=pos.x+(0.001*(math.random(-2, 2))),y=pos.y,z=pos.z+0.002})
+					self.object:move_to({x=pos.x+(0.001*(math.random(-2, 2))),y=pos.y,z=pos.z+0.002})
 				elseif goal_03 ~= 0 or goal_3a ~= 0 then
-					self.object:moveto({x=pos.x-0.002,y=pos.y,z=pos.z+(0.001*(math.random(-2, 2)))})
+					self.object:move_to({x=pos.x-0.002,y=pos.y,z=pos.z+(0.001*(math.random(-2, 2)))})
 				elseif goal_04 ~= 0 or goal_4a ~= 0 then
-					self.object:moveto({x=pos.x+(0.001*(math.random(-2, 2))),y=pos.y,z=pos.z-0.002})
+					self.object:move_to({x=pos.x+(0.001*(math.random(-2, 2))),y=pos.y,z=pos.z-0.002})
 				else -- I'm lost, no dirt
-					self.object:moveto({x=pos.x+(0.001*(math.random(-8, 8))),y=pos.y,z=pos.z+(0.001*(math.random(-8, 8)))})
+					self.object:move_to({x=pos.x+(0.001*(math.random(-8, 8))),y=pos.y,z=pos.z+(0.001*(math.random(-8, 8)))})
 				end
 			end
 		end
@@ -219,7 +219,7 @@ else
 			itemstack:add_wear(65535/(uses-1))
 			if itemstack:get_wear() == 0 and minetest.get_modpath("invtweak") then
 				local index = user:get_wield_index()
-				minetest.sound_play("invtweak_tool_break", {pos = user:getpos(), gain = 0.9, max_hear_distance = 5})
+				minetest.sound_play("invtweak_tool_break", {pos = user:get_pos(), gain = 0.9, max_hear_distance = 5})
 				minetest.after(0.20, refill, user, tool_name, index)
 			end
 		end
