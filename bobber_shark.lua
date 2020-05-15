@@ -125,7 +125,7 @@ local FISHING_BOBBER_SHARK_ENTITY={
 				0.25, 0.40,  -- min size, max size
 				false, "fishing_particle_baitball_shark.png")
 			-- add sound
-			minetest.sound_play("fishing_baitball", {pos = self.object:getpos(), gain = 0.2, })
+			minetest.sound_play("fishing_baitball", {pos = self.object:get_pos(), gain = 0.2, })
 		end
 	end,
 
@@ -156,7 +156,7 @@ local FISHING_BOBBER_SHARK_ENTITY={
 
 		--rotate bobber
 		if math.random(1, 4) == 1 then
-			self.object:setyaw(self.object:get_yaw()+((math.random(0,360)-180)/2880*math.pi))
+			self.object:set_yaw(self.object:get_yaw()+((math.random(0,360)-180)/2880*math.pi))
 		end
 
 		self.timer = self.timer + 1

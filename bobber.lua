@@ -99,7 +99,7 @@ local FISHING_BOBBER_ENTITY={
 					if inv:room_for_item("main", {name=name, count=1, wear=wear_value, metadata=""}) then
 						inv:add_item("main", {name=name, count=1, wear=wear_value, metadata=""})
 					else
-						minetest.spawn_item(clicker:getpos(), {name=name, count=1, wear=wear_value, metadata=""})
+						minetest.spawn_item(clicker:get_pos(), {name=name, count=1, wear=wear_value, metadata=""})
 					end
 				end
 			else
@@ -151,14 +151,14 @@ local FISHING_BOBBER_ENTITY={
 		local p = player:get_pos()
 		local dist = ((p.x-pos.x)^2 + (p.y-pos.y)^2 + (p.z-pos.z)^2)^0.5
 		if dist > fishing_setting.settings["bobber_view_range"] then
-			minetest.sound_play("fishing_bobber1", {pos = self.object:getpos(),gain = 0.5,})
+			minetest.sound_play("fishing_bobber1", {pos = self.object:get_pos(),gain = 0.5,})
 			self.object:remove()
 			return
 		end
 
 		--rotate bobber
 		if math.random(1, 4) == 1 then
-			self.object:set_yaw(self.object:getyaw()+((math.random(0,360)-180)/2880*math.pi))
+			self.object:set_yaw(self.object:get_yaw()+((math.random(0,360)-180)/2880*math.pi))
 		end
 
 		self.timer = self.timer + 1
